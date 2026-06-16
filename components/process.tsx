@@ -1,18 +1,18 @@
 import { ListChecks } from "lucide-react";
 
-import { processSteps } from "@/lib/site-content";
+import { processSectionContent, processSteps } from "@/lib/site-content";
 import { Reveal } from "./reveal";
 import { SectionHeading } from "./section-heading";
 
 export function Process() {
   return (
-    <section className="py-18 sm:py-24" id="process">
+    <section className="py-18 sm:py-24">
       <div className="section-shell">
         <Reveal>
           <SectionHeading
-            eyebrow="How It Works"
-            title="A simple process with clear momentum"
-            copy="The goal is to keep the path straightforward: understand the bottleneck, build the right system, test it properly, and keep improving from there."
+            eyebrow={processSectionContent.eyebrow}
+            title={processSectionContent.title}
+            copy={processSectionContent.copy}
           />
         </Reveal>
 

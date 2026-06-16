@@ -1,6 +1,6 @@
 import { BadgeCheck } from "lucide-react";
 
-import { benefits } from "@/lib/site-content";
+import { benefits, whyChooseSectionContent } from "@/lib/site-content";
 import { Reveal } from "./reveal";
 import { SectionHeading } from "./section-heading";
 
@@ -10,9 +10,9 @@ export function WhyChooseMe() {
       <div className="section-shell">
         <Reveal>
           <SectionHeading
-            eyebrow="Why Choose Me"
-            title="Built around business reality, not empty digital noise"
-            copy="The value is not just a modern interface. It is the combination of thoughtful design, practical systems, and a workflow that respects how small businesses actually operate."
+            eyebrow={whyChooseSectionContent.eyebrow}
+            title={whyChooseSectionContent.title}
+            copy={whyChooseSectionContent.copy}
           />
         </Reveal>
 

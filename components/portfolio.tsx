@@ -1,23 +1,36 @@
+import Link from "next/link";
 import { ArrowUpRight, BadgeCheck, BriefcaseBusiness } from "lucide-react";
 
-import { portfolioItems } from "@/lib/site-content";
+import { portfolioItems, portfolioSectionContent } from "@/lib/site-content";
 import { Reveal } from "./reveal";
 import { SectionHeading } from "./section-heading";
 
-export function Portfolio() {
+type PortfolioProps = {
+  preview?: boolean;
+};
+
+export function Portfolio({ preview = false }: PortfolioProps) {
+  const items = preview ? portfolioItems.slice(0, 3) : portfolioItems;
+
   return (
-    <section className="py-18 sm:py-24" id="portfolio">
+    <section className="py-18 sm:py-24">
       <div className="section-shell">
         <Reveal>
           <SectionHeading
-            eyebrow="Portfolio"
-            title="Real projects and realistic concepts"
-            copy="The work below shows both live execution and practical solution concepts. The distinction is clear, because trust matters as much as presentation."
+            eyebrow={portfolioSectionContent.eyebrow}
+            title={
+              preview
+                ? portfolioSectionContent.previewTitle
+                : portfolioSectionContent.pageTitle
+            }
+            copy={
+              preview ? portfolioSectionContent.previewCopy : portfolioSectionContent.pageCopy
+            }
           />
         </Reveal>
 
         <div className="mt-12 grid gap-5 lg:grid-cols-2">
-          {portfolioItems.map((item, index) => (
+          {items.map((item, index) => (
             <Reveal key={item.name} delay={index * 90}>
               <article className="glass-panel flex h-full flex-col rounded-[1.9rem] p-7">
                 <div className="flex flex-wrap items-center gap-3">
@@ -28,11 +41,11 @@ export function Portfolio() {
                   {item.href ? (
                     <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/18 bg-emerald-400/8 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-200">
                       <BadgeCheck className="h-3.5 w-3.5" />
-                      Live Project
+                      Реален проект
                     </span>
                   ) : (
                     <span className="inline-flex items-center rounded-full border border-[var(--border)] px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
-                      Demo Concept
+                      Демо концепция
                     </span>
                   )}
                 </div>
@@ -61,13 +74,22 @@ export function Portfolio() {
                   </a>
                 ) : (
                   <div className="mt-8 text-sm text-[var(--muted)]">
-                    Built as a proof-of-concept to show how the workflow could feel in practice.
+                    Създадено като демо концепция, за да покаже как може да изглежда решението
+                    в реална бизнес ситуация.
                   </div>
                 )}
               </article>
             </Reveal>
           ))}
         </div>
+
+        {preview ? (
+          <Reveal delay={260} className="mt-10">
+            <Link href="/portfolio" className="ghost-button rounded-full">
+              Виж цялото портфолио
+            </Link>
+          </Reveal>
+        ) : null}
       </div>
     </section>
   );

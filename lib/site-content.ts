@@ -15,8 +15,12 @@ export type ProblemCard = {
 
 export type ServiceCard = {
   title: string;
+  shortDescription: string;
   description: string;
-  icon: "website" | "automation" | "assistant" | "capture";
+  problem: string;
+  forWho: string;
+  result: string;
+  icon: "website" | "automation" | "assistant" | "capture" | "crm" | "notifications";
   accent: string;
 };
 
@@ -24,7 +28,7 @@ export type PortfolioItem = {
   name: string;
   type: string;
   description: string;
-  category: "Real Website Project" | "Demo Automation" | "Demo AI Assistant";
+  category: "Реален проект" | "Демо концепция";
   href?: string;
   ctaLabel?: string;
 };
@@ -55,201 +59,393 @@ export type AssistantProblem = {
   label: string;
 };
 
+export const companyInfo = {
+  name: "VDX Digital",
+  tagline: "Уебсайтове, автоматизации и AI системи",
+  mission:
+    "Помагам на бизнеси да спестят време, да намалят ръчната работа и да не изпускат клиентски запитвания.",
+  email: "V.DimitrovDigital@gmail.com",
+  phone: "0893663031",
+  instagram: "https://www.instagram.com/v.dimitrovdigital/",
+};
+
 export const navLinks: NavLink[] = [
-  { label: "Services", href: "#services" },
-  { label: "Portfolio", href: "#portfolio" },
-  { label: "Process", href: "#process" },
-  { label: "Contact", href: "#contact" },
+  { label: "Начало", href: "/" },
+  { label: "Услуги", href: "/services" },
+  { label: "Портфолио", href: "/portfolio" },
+  { label: "AI асистент", href: "/ai-assistant" },
+  { label: "Контакти", href: "/contact" },
 ];
 
+export const homeHero = {
+  eyebrow: "Дигитални решения за български бизнеси",
+  title: "Спестете време. Намалете ръчната работа. Не изпускайте клиенти.",
+  description:
+    "Изграждам сайтове, автоматизации и умни системи, които помагат на бизнесите да работят по-организирано и да приемат повече запитвания.",
+  primaryCta: {
+    label: "Виж услугите",
+    href: "/services",
+  },
+  secondaryCta: {
+    label: "Безплатна консултация",
+    href: "/contact",
+  },
+};
+
 export const heroBadges: HeroBadge[] = [
-  { label: "Websites" },
-  { label: "Automation" },
-  { label: "AI Assistants" },
-  { label: "Lead Systems" },
+  { label: "Уебсайтове" },
+  { label: "Автоматизации" },
+  { label: "AI асистенти" },
+  { label: "Системи за запитвания" },
 ];
+
+export const heroHighlights = [
+  "Форми и потоци, които пазят всяко ново запитване на едно място.",
+  "Уебсайтове, които изглеждат професионално и насочват клиента към действие.",
+  "Автоматизации, които премахват повтарящата се ръчна работа.",
+];
+
+export const problemSectionContent = {
+  eyebrow: "Чести проблеми",
+  title: "Къде бизнесът губи време и потенциални клиенти?",
+  copy:
+    "Фокусът не е върху сложна технология, а върху това да има по-малко хаос, по-бързи отговори и по-ясна система за работа.",
+};
 
 export const problemCards: ProblemCard[] = [
   {
-    title: "Too many repetitive messages",
+    title: "Получавате много едни и същи въпроси",
     description:
-      "Visitors keep asking the same questions about services, prices, bookings, and availability.",
+      "Клиентите често питат за услуги, цени, работно време, свободни часове и наличности.",
     icon: "messages",
   },
   {
-    title: "Missed customer inquiries",
+    title: "Изпускате клиентски запитвания",
     description:
-      "Leads slip through because there is no clear system for capturing, tracking, and replying.",
+      "Няма ясен процес за събиране, подреждане и навременно връщане към новите запитвания.",
     icon: "alert",
   },
   {
-    title: "No professional website",
+    title: "Нямате професионален сайт",
     description:
-      "An outdated or missing website makes the business feel harder to trust and easier to ignore.",
+      "Липсващият или остарял сайт прави бизнеса по-труден за доверие и по-лесен за подминаване.",
     icon: "layout",
   },
   {
-    title: "Manual tracking in notebooks or chats",
+    title: "Следите всичко ръчно",
     description:
-      "Customer requests are scattered across messages, screenshots, notes, and memory.",
+      "Информацията е разпръсната в чатове, тетрадки, бележки и снимки, вместо в работеща система.",
     icon: "notebook",
   },
   {
-    title: "Slow response time",
+    title: "Отговаряте твърде бавно",
     description:
-      "Late replies create friction and cost momentum when potential customers are ready to buy.",
+      "Когато отговорът се забави, клиентът често продължава към следващия вариант.",
     icon: "clock",
   },
   {
-    title: "No clear system for leads",
+    title: "Нямате система за лийдове",
     description:
-      "Without forms, CRM sheets, and notifications, every new inquiry depends on manual follow-up.",
+      "Без форми, CRM или известия всяко ново запитване зависи изцяло от ръчно следене.",
     icon: "leads",
   },
 ];
 
+export const servicesSectionContent = {
+  eyebrow: "Услуги",
+  previewTitle: "Услуги, които решават реални бизнес проблеми",
+  previewCopy:
+    "Всеки проект е насочен към по-добра организация, по-малко ръчна работа и по-сигурно приемане на нови запитвания.",
+  pageTitle: "Дигитални услуги, изградени около ежедневната работа на бизнеса",
+  pageCopy:
+    "Решенията са подбрани така, че да улесняват обслужването, да подобряват онлайн присъствието и да спестяват време на малки и локални бизнеси.",
+};
+
 export const services: ServiceCard[] = [
   {
-    title: "Business Websites",
+    title: "Изработка на уебсайтове",
+    shortDescription:
+      "Модерни и удобни сайтове, които представят бизнеса ясно и насочват клиента към запитване.",
     description:
-      "Modern, fast and mobile-friendly websites built to make your business look professional and convert visitors into customers.",
+      "Сайтове с професионален дизайн, мобилна версия и ясна структура, които помагат на бизнеса да изглежда надеждно и подредено.",
+    problem:
+      "Подходящо, когато бизнесът няма добър сайт или сегашният сайт не вдъхва доверие и не носи достатъчно запитвания.",
+    forWho:
+      "За салони, ресторанти, кабинети, сервизи и локални услуги, които искат по-силно онлайн присъствие.",
+    result:
+      "Получавате сайт, който представя услугите добре, работи бързо на телефон и улеснява клиента да се свърже.",
     icon: "website",
-    accent: "Professional online presence",
+    accent: "По-силно онлайн присъствие",
   },
   {
-    title: "Business Automation",
+    title: "Бизнес автоматизации",
+    shortDescription:
+      "Автоматизирани процеси, които подреждат запитванията и намаляват ръчната работа.",
     description:
-      "Automated workflows that reduce manual tasks, organize customer requests, and notify you instantly when a new lead arrives.",
+      "Свързвам формуляри, таблици, CRM и известия, така че новите заявки да не се губят и екипът да реагира по-бързо.",
+    problem:
+      "Полезно, когато има много ръчни действия, прехвърляне на информация и объркване между канали.",
+    forWho:
+      "За бизнеси, които получават чести запитвания и искат по-ясен вътрешен процес.",
+    result:
+      "Получавате по-подредена работа, по-малко пропуски и повече време за реално обслужване на клиенти.",
     icon: "automation",
-    accent: "Less admin, more focus",
+    accent: "По-малко хаос в процеса",
   },
   {
-    title: "AI Chatbot Assistants",
+    title: "AI чатбот асистенти",
+    shortDescription:
+      "Умни асистенти, които отговарят на чести въпроси и насочват клиента към следваща стъпка.",
     description:
-      "Smart website or social media assistants that answer common questions, guide customers, and collect contact details.",
+      "AI асистентът може да отговаря за услуги, работно време, резервации и първоначални въпроси още преди човек да се включи.",
+    problem:
+      "Подходящо, когато бизнесът получава повтарящи се въпроси и отговорите отнемат твърде много време.",
+    forWho:
+      "За бизнеси с чести клиентски въпроси във Facebook, Instagram, сайт или чат.",
+    result:
+      "Клиентите получават по-бърза първа реакция, а екипът спестява време от едни и същи разговори.",
     icon: "assistant",
-    accent: "Always-on first response",
+    accent: "По-бърз първи контакт",
   },
   {
-    title: "Lead Capture Systems",
+    title: "Системи за запитвания и лийдове",
+    shortDescription:
+      "Форми, събиране на данни и проследяване, така че всяка нова заявка да бъде запазена.",
     description:
-      "Forms, CRM sheets, notifications and follow-up systems that make sure every inquiry is saved and handled properly.",
+      "Изграждам форми и логика за приемане на запитвания, които пазят важните данни и улесняват последващата реакция.",
+    problem:
+      "Решава проблема с изгубени запитвания, липса на проследяване и неясен статус на новите клиенти.",
+    forWho:
+      "За бизнеси, които искат по-надежден начин да събират и обработват нови интереси.",
+    result:
+      "Получавате по-ясен поток от лийдове, по-малко пропуски и по-добър контрол върху всяка заявка.",
     icon: "capture",
-    accent: "Every inquiry accounted for",
+    accent: "Всяко запитване е запазено",
+  },
+  {
+    title: "Google Sheets / CRM процеси",
+    shortDescription:
+      "Подредени работни потоци за записване, следене и обработка на информация.",
+    description:
+      "Настройвам практични процеси в Google Sheets или CRM, които дават ясен преглед на запитванията, задачите и последващите действия.",
+    problem:
+      "Подходящо, когато информацията е разпиляна и няма едно място, където да се следи какво се случва.",
+    forWho:
+      "За собственици и малки екипи, които искат подредена ежедневна работа без сложни системи.",
+    result:
+      "Получавате по-добър контрол върху процесите и по-лесно проследяване на клиента от първи контакт до обслужване.",
+    icon: "crm",
+    accent: "По-ясна организация",
+  },
+  {
+    title: "Имейл и Telegram известия",
+    shortDescription:
+      "Известия в реално време, когато има ново запитване или важна промяна.",
+    description:
+      "Настройвам автоматични известия към имейл или Telegram, така че да знаете веднага, когато дойде нов клиентски интерес.",
+    problem:
+      "Полезно, когато реакцията се бави заради пропуснато съобщение, имейл или формуляр.",
+    forWho:
+      "За бизнеси, които искат бърз отговор и по-малко ръчно следене на канали.",
+    result:
+      "Получавате по-бърза реакция, по-малко пропуснати възможности и по-спокоен контрол върху новите заявки.",
+    icon: "notifications",
+    accent: "Известия навреме",
   },
 ];
+
+export const portfolioSectionContent = {
+  eyebrow: "Портфолио",
+  previewTitle: "Реален проект и демонстрационни концепции",
+  previewCopy:
+    "Показвам ясно кое е реализиран проект и кое е демо концепция, защото доверието е също толкова важно, колкото и визията.",
+  pageTitle: "Проекти, които показват как решенията изглеждат на практика",
+  pageCopy:
+    "Тук ще откриете както реален сайт, така и демонстрационни идеи за автоматизации и AI асистенти, създадени около типични бизнес ситуации.",
+};
 
 export const portfolioItems: PortfolioItem[] = [
   {
     name: "NUVE Beauty Salon",
-    type: "Premium website with service pages and mobile-first UX",
+    type: "Премиум сайт за салон за красота",
     description:
-      "Premium website for a beauty salon with service pages, gallery, contact section, Google Maps integration and mobile-first design.",
-    category: "Real Website Project",
+      "Премиум сайт за салон за красота с услуги, галерия, контактна секция, Google Maps интеграция и мобилен дизайн.",
+    category: "Реален проект",
     href: "https://nuve-website-rouge.vercel.app",
-    ctaLabel: "View Project",
+    ctaLabel: "Виж проекта",
   },
   {
-    name: "HVAC Lead System",
-    type: "Lead form to Google Sheets workflow",
+    name: "Система за запитвания за фирма за климатици",
+    type: "Демо автоматизация",
     description:
-      "Demo lead capture system for air conditioning companies. Customer fills a form, the request is saved in Google Sheets and the business receives an instant notification.",
-    category: "Demo Automation",
+      "Демо система за запитвания, при която клиентът попълва форма, данните се записват в Google Sheets и фирмата получава известие веднага.",
+    category: "Демо концепция",
   },
   {
-    name: "Restaurant Assistant",
-    type: "Conversational FAQ and booking concept",
+    name: "AI асистент за ресторант",
+    type: "Демо AI концепция",
     description:
-      "AI assistant concept for restaurants that answers questions about working hours, menu, reservations and collects booking requests.",
-    category: "Demo AI Assistant",
+      "AI асистент за ресторант, който отговаря на въпроси за работно време, меню, резервации и събира заявки за контакт.",
+    category: "Демо концепция",
   },
   {
-    name: "Salon Booking Flow",
-    type: "Appointment request automation concept",
+    name: "Автоматизация за салон за красота",
+    type: "Демо автоматизация",
     description:
-      "Automation concept for beauty salons that helps manage appointment requests and reduce repetitive messages.",
-    category: "Demo Automation",
+      "Концепция за автоматизация, която подрежда записванията, намалява повтарящите се съобщения и улеснява екипа.",
+    category: "Демо концепция",
   },
 ];
+
+export const processSectionContent = {
+  eyebrow: "Как протича работата",
+  title: "Ясен процес от първия разговор до готовото решение",
+  copy:
+    "Целта е всичко да бъде разбираемо и подредено, без излишна сложност и без неясни стъпки по пътя.",
+};
 
 export const processSteps: ProcessStep[] = [
   {
     step: "01",
-    title: "Free consultation",
-    description: "We talk through your business, current setup, and where time or leads are being lost.",
+    title: "Безплатна консултация",
+    description: "Разглеждаме как работи бизнесът в момента и къде се губят време и запитвания.",
   },
   {
     step: "02",
-    title: "Business problem analysis",
-    description: "We identify the bottlenecks first so the solution is built around outcomes, not jargon.",
+    title: "Анализ на проблема",
+    description: "Определяме кои са реалните затруднения, за да се изгради решение по нужда, а не по шаблон.",
   },
   {
     step: "03",
-    title: "Website or automation setup",
-    description: "The right tools are connected into one practical system that suits how you already work.",
+    title: "Изработка и настройка",
+    description: "Сайтът, автоматизацията или асистентът се изграждат според начина, по който бизнесът работи.",
   },
   {
     step: "04",
-    title: "Testing and launch",
-    description: "Everything is checked across devices and workflows so your setup feels clear from day one.",
+    title: "Тестове и пускане",
+    description: "Проверяват се визията, формите, известията и основните сценарии преди старта.",
   },
   {
     step: "05",
-    title: "Support and improvements",
-    description: "After launch, we keep refining what saves time, improves lead handling, and supports growth.",
+    title: "Поддръжка и подобрения",
+    description: "След пускането могат да се правят следващи подобрения според нуждите на бизнеса.",
   },
 ];
+
+export const whyChooseSectionContent = {
+  eyebrow: "Защо VDX Digital",
+  title: "Решения, които звучат ясно и работят практично",
+  copy:
+    "Целта е бизнесът да изглежда по-добре, да работи по-подредено и да реагира по-лесно на нови клиенти.",
+};
 
 export const benefits: Benefit[] = [
   {
-    title: "Practical business-focused solutions",
-    description: "Everything is designed to reduce friction, save time, and make daily operations smoother.",
+    title: "Практичен бизнес фокус",
+    description: "Решенията са насочени към ежедневната работа, а не към излишно сложни системи.",
   },
   {
-    title: "Clean modern design",
-    description: "A polished visual presence that makes small businesses look established and trustworthy.",
+    title: "Модерна и чиста визия",
+    description: "Сайтът трябва да изглежда професионално и да вдъхва доверие още от първото отваряне.",
   },
   {
-    title: "Mobile-first websites",
-    description: "Built to feel sharp and responsive on the devices most customers actually use.",
+    title: "Мобилна версия на първо място",
+    description: "Повечето клиенти идват от телефон, затова преживяването там е приоритет.",
   },
   {
-    title: "Time-saving automation",
-    description: "Lead handling, notifications, and follow-up tasks become more reliable with less manual work.",
+    title: "По-малко ръчна работа",
+    description: "Автоматизациите облекчават повтарящи се задачи и намаляват риска от пропуски.",
   },
   {
-    title: "Clear communication",
-    description: "No vague handoff. The process stays understandable, collaborative, and easy to track.",
+    title: "Ясна комуникация",
+    description: "Работата остава разбираема, без объркващи термини и неясни обещания.",
   },
   {
-    title: "Built for small and local businesses",
-    description: "The work is shaped around practical growth, not enterprise complexity for its own sake.",
+    title: "Подходящо за локални бизнеси",
+    description: "Решенията са съобразени с нуждите на малки и средни бизнеси в България.",
   },
 ];
 
+export const assistantSectionContent = {
+  eyebrow: "AI асистент",
+  previewTitle: "Покажете на клиента подходящото решение още преди да Ви пише",
+  previewCopy:
+    "AI асистентът може да зададе няколко кратки въпроса, да препоръча решение и да събере данни за консултация.",
+  pageTitle: "AI асистент, който насочва клиента и подготвя следващата стъпка",
+  pageCopy:
+    "Асистентът е изграден като работещ frontend демо поток. Може да се свърже по-късно с имейл, Google Sheets или CRM система.",
+  openLabel: "Отвори AI асистента",
+  inlineTitle: "Преглед на разговора",
+  inlineCopy:
+    "Посетителят отговаря на няколко въпроса и получава препоръка според типа бизнес и основния проблем.",
+  steps: [
+    "Пита какъв бизнес имате.",
+    "Пита кой е най-големият проблем в момента.",
+    "Препоръчва подходящо решение на български.",
+    "Събира контакт за безплатна консултация.",
+  ],
+};
+
+export const contactSectionContent = {
+  homeEyebrow: "Контакти",
+  homeTitle: "Искате по-подреден сайт, повече яснота и по-малко пропуснати запитвания?",
+  homeCopy:
+    "Можете да пишете директно с кратко описание на бизнеса и текущия проблем. След това най-лесно се избира подходящата следваща стъпка.",
+  pageEyebrow: "Контакти",
+  pageTitle: "Готови ли сте да спестите време и да подобрите бизнеса си?",
+  pageCopy:
+    "Ако имате нужда от сайт, автоматизация, AI асистент или по-добра система за клиентски запитвания, тук е правилното място да започнем.",
+  phoneCopy:
+    "Подходящо за бизнеси, които искат практично решение, по-ясна организация и по-добра реакция към новите клиенти.",
+  successLabel: "Запитването е подготвено",
+  successTitle: "Благодарим Ви! Следващата стъпка е свързване към реален канал.",
+  successCopy:
+    "Формата в момента е frontend демо. След това може да се свърже към имейл, Google Sheets или CRM система.",
+};
+
 export const assistantBusinesses: AssistantBusiness[] = [
-  { key: "beauty-salon", label: "Beauty salon" },
-  { key: "restaurant", label: "Restaurant" },
-  { key: "auto-service", label: "Auto service" },
-  { key: "medical-clinic", label: "Medical / clinic" },
-  { key: "other", label: "Other" },
+  { key: "beauty-salon", label: "Салон за красота" },
+  { key: "restaurant", label: "Ресторант" },
+  { key: "auto-service", label: "Автосервиз" },
+  { key: "medical-clinic", label: "Медицински кабинет" },
+  { key: "other", label: "Друг бизнес" },
 ];
 
 export const assistantProblems: AssistantProblem[] = [
-  { key: "repetitive-questions", label: "I receive too many repetitive questions" },
-  { key: "missed-inquiries", label: "I miss customer inquiries" },
-  { key: "no-website", label: "I do not have a professional website" },
-  { key: "manual-tracking", label: "I track everything manually" },
-  { key: "more-clients", label: "I want more clients" },
+  { key: "repetitive-questions", label: "Получавам много повтарящи се въпроси" },
+  { key: "missed-inquiries", label: "Изпускам клиентски запитвания" },
+  { key: "no-website", label: "Нямам професионален сайт" },
+  { key: "manual-tracking", label: "Следя всичко ръчно" },
+  { key: "more-clients", label: "Искам повече клиенти" },
 ];
+
+export const assistantLabels = {
+  widgetTitle: "AI бизнес асистент",
+  previewTag: "Frontend демо",
+  scriptedFlow: "Демо поток",
+  firstQuestion: "Какъв бизнес имате?",
+  secondQuestion: "Кой е най-големият Ви проблем в момента?",
+  consultationQuestion: "Искате ли безплатна консултация за Вашия бизнес?",
+  reset: "Ново начало",
+  open: "AI асистент",
+  close: "Затвори асистента",
+  openAria: "Отвори AI бизнес асистента",
+  closeAria: "Затвори AI бизнес асистента",
+  inlineOpen: "Пробвай AI асистента",
+  sendRequest: "Изпрати заявка",
+  success:
+    "Благодарим Ви! Заявката е подготвена. Следваща стъпка: свързване към имейл, Google Sheets или CRM система.",
+  note:
+    "Работи веднага като демо и може да бъде свързан по-късно с реален канал за събиране на запитвания.",
+};
 
 const recommendationMap: Record<string, string> = {
   "beauty-salon:repetitive-questions":
-    "Your business could benefit from a website with service information, booking buttons and an AI assistant that answers common questions automatically.",
+    "За Вашия бизнес бих препоръчал сайт с ясна информация за услугите, бутони за записване и AI асистент, който отговаря автоматично на чести въпроси.",
   "restaurant:missed-inquiries":
-    "Your business could benefit from a reservation assistant that answers questions about working hours, menu and booking availability.",
+    "За Вашия бизнес бих препоръчал асистент за резервации, който да отговаря за работно време, меню и свободни места, без да се губят запитвания.",
   "auto-service:manual-tracking":
-    "Your business could benefit from a lead form connected to a Google Sheet or CRM, so every request is saved and organized.",
+    "За Вашия бизнес бих препоръчал форма за запитвания, свързана с Google Sheets или CRM, така че всяка заявка да се записва и подрежда автоматично.",
 };
 
 export function getAssistantRecommendation(
@@ -263,20 +459,20 @@ export function getAssistantRecommendation(
   }
 
   if (problem === "repetitive-questions") {
-    return "A website assistant could answer common questions automatically, guide visitors, and reduce the amount of repetitive replies you handle manually.";
+    return "За Вашия бизнес бих препоръчал AI асистент или добре структуриран сайт, който да отговаря на честите въпроси и да намали повтарящите се разговори.";
   }
 
   if (problem === "missed-inquiries") {
-    return "A lead capture system with instant notifications would help you catch every inquiry earlier and reply with more consistency.";
+    return "За Вашия бизнес бих препоръчал система за запитвания с автоматични известия, за да не се губят нови потенциални клиенти.";
   }
 
   if (problem === "no-website") {
-    return "A modern website would give your business a stronger online presence, clearer service information, and a better path for new customers to contact you.";
+    return "За Вашия бизнес бих препоръчал професионален сайт, който представя услугите ясно, вдъхва доверие и улеснява клиента да се свърже.";
   }
 
   if (problem === "manual-tracking") {
-    return "A simple automation flow connected to Google Sheets or a CRM could keep every request organized without relying on notebooks or scattered chats.";
+    return "За Вашия бизнес бих препоръчал автоматизиран процес с Google Sheets или CRM, така че информацията да се подрежда без ръчно прехвърляне.";
   }
 
-  return "A combination of a conversion-focused website, lead capture flow, and practical automation could help your business attract more clients and respond faster.";
+  return "За Вашия бизнес бих препоръчал комбинация от добър сайт, система за запитвания и практична автоматизация, за да получавате повече интерес и да реагирате по-организирано.";
 }

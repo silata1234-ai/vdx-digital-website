@@ -1,14 +1,9 @@
+import Link from "next/link";
 import Image from "next/image";
 import { ArrowUpRight, BadgeCheck, Bot, ChevronRight } from "lucide-react";
 
-import { heroBadges } from "@/lib/site-content";
+import { heroBadges, heroHighlights, homeHero } from "@/lib/site-content";
 import { Reveal } from "./reveal";
-
-const heroHighlights = [
-  "Lead forms connected to clear follow-up flows",
-  "Website builds shaped around real customer actions",
-  "Automation ideas that remove repetitive admin work",
-];
 
 export function Hero() {
   return (
@@ -18,26 +13,23 @@ export function Hero() {
           <Reveal className="flex flex-col gap-8">
             <div className="section-eyebrow rounded-full">
               <Bot className="h-3.5 w-3.5" />
-              <span>Premium digital systems for service businesses</span>
+              <span>{homeHero.eyebrow}</span>
             </div>
 
             <div className="space-y-6">
-              <h1 className="section-title max-w-4xl">Save Time. Reduce Workload. Grow Faster.</h1>
-              <p className="section-copy">
-                I build websites and smart systems that help businesses automate repetitive
-                work, capture more leads, and improve their online presence.
-              </p>
+              <h1 className="section-title max-w-4xl">{homeHero.title}</h1>
+              <p className="section-copy">{homeHero.description}</p>
             </div>
 
             <div className="flex flex-col gap-4 sm:flex-row">
-              <a href="#portfolio" className="gold-button rounded-full">
-                View Portfolio
+              <Link href={homeHero.primaryCta.href} className="gold-button rounded-full">
+                {homeHero.primaryCta.label}
                 <ArrowUpRight className="h-4 w-4" />
-              </a>
-              <a href="#contact" className="ghost-button rounded-full">
-                Get Free Consultation
+              </Link>
+              <Link href={homeHero.secondaryCta.href} className="ghost-button rounded-full">
+                {homeHero.secondaryCta.label}
                 <ChevronRight className="h-4 w-4" />
-              </a>
+              </Link>
             </div>
 
             <div className="flex flex-wrap gap-3">
@@ -67,7 +59,7 @@ export function Hero() {
               <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#110f0d] via-transparent to-transparent" />
               <Image
                 src="/images/hero-workspace.png"
-                alt="Premium workspace showing a laptop dashboard and mobile lead alerts"
+                alt="Модерна работна среда с лаптоп, сайт и известия за нови запитвания"
                 width={1680}
                 height={945}
                 className="h-full min-h-[420px] w-full object-cover"
@@ -79,20 +71,20 @@ export function Hero() {
               <div className="absolute bottom-5 left-5 right-5 z-20 grid gap-3 sm:grid-cols-2">
                 <div className="glass-panel rounded-[1.4rem] p-4">
                   <p className="text-xs uppercase tracking-[0.22em] text-[var(--accent)]">
-                    Website + systems
+                    Сайт и система
                   </p>
                   <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
-                    Built to make service businesses look sharper, respond faster, and lose
-                    fewer leads.
+                    Изградено, за да представя бизнеса по-ясно и да превръща интереса в реално
+                    запитване.
                   </p>
                 </div>
                 <div className="glass-panel rounded-[1.4rem] p-4">
                   <p className="text-xs uppercase tracking-[0.22em] text-[var(--accent)]">
-                    Practical outcomes
+                    Практичен резултат
                   </p>
                   <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
-                    Clear workflows, simple automations, and customer journeys that feel easier
-                    to manage.
+                    По-малко ръчна работа, по-ясна организация и по-добра реакция към новите
+                    клиенти.
                   </p>
                 </div>
               </div>

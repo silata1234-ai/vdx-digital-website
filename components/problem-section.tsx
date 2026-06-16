@@ -7,7 +7,7 @@ import {
   NotebookPen,
 } from "lucide-react";
 
-import { problemCards } from "@/lib/site-content";
+import { problemCards, problemSectionContent } from "@/lib/site-content";
 import { Reveal } from "./reveal";
 import { SectionHeading } from "./section-heading";
 
@@ -22,13 +22,13 @@ const iconMap = {
 
 export function ProblemSection() {
   return (
-    <section className="py-18 sm:py-24" id="problems">
+    <section className="py-18 sm:py-24">
       <div className="section-shell">
         <Reveal>
           <SectionHeading
-            eyebrow="Business Bottlenecks"
-            title="Is your business losing time and clients?"
-            copy="This is not about selling technology for its own sake. It is about removing the friction that slows replies, weakens trust, and lets opportunities disappear."
+            eyebrow={problemSectionContent.eyebrow}
+            title={problemSectionContent.title}
+            copy={problemSectionContent.copy}
           />
         </Reveal>
 

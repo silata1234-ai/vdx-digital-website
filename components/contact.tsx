@@ -3,6 +3,8 @@
 import { FormEvent, useState } from "react";
 import { Mail, MessageCircleMore, PhoneCall, Send } from "lucide-react";
 
+import { companyInfo, contactSectionContent } from "@/lib/site-content";
+import { submitLead } from "@/lib/submit-lead";
 import { Reveal } from "./reveal";
 import { SectionHeading } from "./section-heading";
 
@@ -14,6 +16,10 @@ type InquiryState = {
   help: string;
 };
 
+type ContactProps = {
+  variant?: "home" | "page";
+};
+
 const initialState: InquiryState = {
   name: "",
   businessName: "",
@@ -22,24 +28,56 @@ const initialState: InquiryState = {
   help: "",
 };
 
-export function Contact() {
+export function Contact({ variant = "page" }: ContactProps) {
   const [formState, setFormState] = useState<InquiryState>(initialState);
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSubmitted(true);
+    setIsSubmitting(true);
+    setErrorMessage("");
+
+    const payload = {
+      source: "contact_form" as const,
+      name: formState.name.trim(),
+      businessName: formState.businessName.trim(),
+      email: formState.email.trim(),
+      phone: formState.phone.trim(),
+      message: formState.help.trim(),
+      selectedBusinessType: "",
+      selectedProblem: "",
+      recommendedSolution: "",
+      createdAt: new Date().toISOString(),
+    };
+
+    try {
+      console.log("[VDX] Submitting contact form", payload);
+      await submitLead(payload);
+      setSubmitted(true);
+      console.log("[VDX] Contact form submitted successfully");
+    } catch (error) {
+      console.error("[VDX] Contact form submission error", error);
+      setErrorMessage("Възникна проблем при изпращането. Моля, опитайте отново.");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
+  const isHome = variant === "home";
+
   return (
-    <section className="py-18 sm:py-24" id="contact">
+    <section className="py-18 sm:py-24">
       <div className="section-shell">
         <div className="grid gap-8 xl:grid-cols-[0.9fr_1.1fr]">
           <Reveal>
             <SectionHeading
-              eyebrow="Contact"
-              title="Ready to save time and improve your business?"
-              copy="Whether you need a stronger website, a better way to capture leads, or a simple automation flow that removes manual work, this is the place to start."
+              eyebrow={
+                isHome ? contactSectionContent.homeEyebrow : contactSectionContent.pageEyebrow
+              }
+              title={isHome ? contactSectionContent.homeTitle : contactSectionContent.pageTitle}
+              copy={isHome ? contactSectionContent.homeCopy : contactSectionContent.pageCopy}
             />
 
             <div className="mt-8 space-y-4">
@@ -50,13 +88,13 @@ export function Contact() {
                   </div>
                   <div>
                     <p className="text-xs uppercase tracking-[0.22em] text-[var(--accent)]">
-                      Email
+                      Имейл
                     </p>
                     <a
-                      href="mailto:hello@vdxdigital.com"
+                      href={`mailto:${companyInfo.email}`}
                       className="mt-2 inline-block text-[var(--foreground)] hover:text-[var(--accent-strong)]"
                     >
-                      hello@vdxdigital.com
+                      {companyInfo.email}
                     </a>
                   </div>
                 </div>
@@ -69,11 +107,16 @@ export function Contact() {
                   </div>
                   <div>
                     <p className="text-xs uppercase tracking-[0.22em] text-[var(--accent)]">
-                      Response focus
+                      Телефон
                     </p>
+                    <a
+                      href={`tel:${companyInfo.phone}`}
+                      className="mt-2 inline-block text-[var(--foreground)] hover:text-[var(--accent-strong)]"
+                    >
+                      {companyInfo.phone}
+                    </a>
                     <p className="mt-2 text-sm leading-7 text-[var(--muted)]">
-                      Best for business owners who want a practical setup, not something flashy
-                      that creates more admin.
+                      {contactSectionContent.phoneCopy}
                     </p>
                   </div>
                 </div>
@@ -86,31 +129,37 @@ export function Contact() {
               {submitted ? (
                 <div className="rounded-[1.75rem] border border-emerald-400/18 bg-emerald-400/8 p-6">
                   <p className="text-xs uppercase tracking-[0.22em] text-emerald-200">
-                    Inquiry prepared
+                    {contactSectionContent.successLabel}
                   </p>
                   <h3 className="mt-3 text-2xl font-semibold text-[var(--foreground)]">
-                    Thanks, your inquiry is ready for the next connection step.
+                    {contactSectionContent.successTitle}
                   </h3>
                   <p className="mt-4 text-sm leading-7 text-[var(--muted)]">
-                    This form is currently frontend-only, so it is set up to display a success
-                    state until you connect it to email, Google Sheets, or automation.
+                    {contactSectionContent.successCopy}
                   </p>
                 </div>
               ) : (
                 <form className="space-y-4" onSubmit={handleSubmit}>
+                  {errorMessage ? (
+                    <div className="rounded-[1.35rem] border border-rose-400/18 bg-rose-400/8 px-4 py-3 text-sm leading-7 text-rose-100">
+                      {errorMessage}
+                    </div>
+                  ) : null}
+
                   <div className="grid gap-4 sm:grid-cols-2">
                     <input
                       className="field-input rounded-2xl"
-                      placeholder="Name"
+                      placeholder="Име"
                       value={formState.name}
                       onChange={(event) =>
                         setFormState((current) => ({ ...current, name: event.target.value }))
                       }
+                      disabled={isSubmitting}
                       required
                     />
                     <input
                       className="field-input rounded-2xl"
-                      placeholder="Business name"
+                      placeholder="Име на бизнеса"
                       value={formState.businessName}
                       onChange={(event) =>
                         setFormState((current) => ({
@@ -118,50 +167,61 @@ export function Contact() {
                           businessName: event.target.value,
                         }))
                       }
+                      disabled={isSubmitting}
                       required
                     />
                   </div>
+
                   <div className="grid gap-4 sm:grid-cols-2">
                     <input
                       className="field-input rounded-2xl"
                       type="email"
-                      placeholder="Email"
+                      placeholder="Имейл"
                       value={formState.email}
                       onChange={(event) =>
                         setFormState((current) => ({ ...current, email: event.target.value }))
                       }
+                      disabled={isSubmitting}
                       required
                     />
                     <input
                       className="field-input rounded-2xl"
-                      placeholder="Phone"
+                      placeholder="Телефон"
                       value={formState.phone}
                       onChange={(event) =>
                         setFormState((current) => ({ ...current, phone: event.target.value }))
                       }
+                      disabled={isSubmitting}
                     />
                   </div>
+
                   <textarea
                     className="field-textarea rounded-2xl"
-                    placeholder="What do you need help with?"
+                    placeholder="С какво мога да помогна?"
                     value={formState.help}
                     onChange={(event) =>
                       setFormState((current) => ({ ...current, help: event.target.value }))
                     }
+                    disabled={isSubmitting}
                     required
                   />
+
                   <div className="flex flex-col gap-3 sm:flex-row">
-                    <button type="submit" className="gold-button rounded-full">
-                      Send Inquiry
+                    <button
+                      type="submit"
+                      className="gold-button rounded-full"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? "Изпращане..." : "Изпрати запитване"}
                       <Send className="h-4 w-4" />
                     </button>
                     <a
-                      href="https://instagram.com/"
+                      href={companyInfo.instagram}
                       target="_blank"
                       rel="noreferrer"
                       className="ghost-button rounded-full"
                     >
-                      Message on Instagram
+                      Пиши в Instagram
                       <MessageCircleMore className="h-4 w-4" />
                     </a>
                   </div>
