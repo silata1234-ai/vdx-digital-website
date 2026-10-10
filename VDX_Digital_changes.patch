@@ -1,0 +1,631 @@
+diff --git a/app/ai-assistant/page.tsx b/app/ai-assistant/page.tsx
+index b6196bf..367927c 100644
+--- a/app/ai-assistant/page.tsx
++++ b/app/ai-assistant/page.tsx
+@@ -3,7 +3,7 @@ import { Contact } from "@/components/contact";
+ 
+ export default function AIAssistantPage() {
+   return (
+-    <main className="flex-1 overflow-x-clip">
++    <main className="inner-page flex-1 overflow-x-clip">
+       <ChatbotDemo />
+       <Contact variant="home" />
+     </main>
+diff --git a/app/contact/page.tsx b/app/contact/page.tsx
+index dbcfad2..2ffe94c 100644
+--- a/app/contact/page.tsx
++++ b/app/contact/page.tsx
+@@ -2,7 +2,7 @@ import { Contact } from "@/components/contact";
+ 
+ export default function ContactPage() {
+   return (
+-    <main className="flex-1 overflow-x-clip">
++    <main className="inner-page flex-1 overflow-x-clip">
+       <Contact />
+     </main>
+   );
+diff --git a/app/globals.css b/app/globals.css
+index f4d6aab..6f0cb47 100644
+--- a/app/globals.css
++++ b/app/globals.css
+@@ -1,6 +1,9 @@
+ @import "tailwindcss";
+ @import "tw-animate-css";
+ 
++/* Shared modal and responsive rules are kept separate for easier maintenance. */
++@import "./responsive.css";
++
+ 
+ :root{--background:#080b12;--foreground:#f4f7ff;--card:#111621;--card-foreground:#f4f7ff;--popover:#111621;--popover-foreground:#f4f7ff;--primary:#4d7cff;--primary-foreground:#fff;--secondary:#171e2b;--secondary-foreground:#f4f7ff;--muted:#121824;--muted-foreground:#9ba6ba;--accent:#4d7cff;--accent-foreground:#fff;--destructive:#ff5d68;--border:#283143;--input:#283143;--ring:#6e94ff;--radius:.75rem}
+ *{box-sizing:border-box}html{scroll-behavior:smooth;overflow-x:clip}body{margin:0;background:var(--background);color:var(--foreground);font-family:Arial,Helvetica,sans-serif;overflow-x:clip}button,a{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}
+diff --git a/app/layout.tsx b/app/layout.tsx
+index dfba36c..8a84c32 100644
+--- a/app/layout.tsx
++++ b/app/layout.tsx
+@@ -1,5 +1,6 @@
+ import type { Metadata } from "next";
+ import "./globals.css";
++import { PhoneInquiryProvider } from "@/components/phone-inquiry";
+ 
+ export const metadata: Metadata = {
+   title: "VDX Digital | Уебсайтове, автоматизации и AI решения",
+@@ -17,7 +18,7 @@ export default function RootLayout({
+ }>) {
+   return (
+     <html lang="bg">
+-      <body className="antialiased">{children}</body>
++      <body className="antialiased"><PhoneInquiryProvider>{children}</PhoneInquiryProvider></body>
+     </html>
+   );
+ }
+diff --git a/app/page.tsx b/app/page.tsx
+index 9aabae8..d831c29 100644
+--- a/app/page.tsx
++++ b/app/page.tsx
+@@ -1,8 +1,11 @@
+ "use client";
+ 
+-import { useEffect, useMemo, useRef, useState } from "react";
++import { useEffect, useMemo, useState } from "react";
+ import { ArrowRight, Bot, Check, ChevronRight, Globe2, Menu, MessageCircle, Phone, Sparkles, Workflow, X, Zap } from "lucide-react";
+ 
++import { InquiryButton } from "@/components/phone-inquiry";
++import { Modal } from "@/components/modal";
++
+ const services = [
+   { icon: Globe2, title: "Уебсайтове", text: "Бързи и ясни сайтове, които печелят доверие и водят към запитване." },
+   { icon: Workflow, title: "Бизнес автоматизации", text: "Свързани форми, таблици, известия и процеси без повтаряща се ръчна работа." },
+@@ -11,9 +14,9 @@ const services = [
+ ];
+ 
+ const packages = [
+-  { name: "Старт", price: "от €650", note: "За силно онлайн присъствие", features: ["До 5 ключови секции", "Мобилен дизайн", "Контактни действия", "Основна SEO настройка"], cta: "Искам сайт" },
+-  { name: "Растеж", price: "от €1 250", note: "Сайт + система за запитвания", featured: true, features: ["Всичко от Старт", "Форма и база за запитвания", "Автоматични известия", "AI консултант или калкулатор"], cta: "Избирам Растеж" },
+-  { name: "Автоматизация", price: "от €450", note: "За конкретен работен процес", features: ["Анализ на процеса", "Свързване на използваните инструменти", "Автоматични действия", "Тест и предаване"], cta: "Имам процес за автоматизиране" },
++  { name: "Старт", note: "За силно онлайн присъствие", features: ["До 5 ключови секции", "Мобилен дизайн", "Контактни действия", "Основна SEO настройка"] },
++  { name: "Растеж", note: "Сайт + система за запитвания", featured: true, features: ["Всичко от Старт", "Форма и база за запитвания", "Автоматични известия", "AI консултант или калкулатор"] },
++  { name: "Автоматизация", note: "За конкретен работен процес", features: ["Анализ на процеса", "Свързване на използваните инструменти", "Автоматични действия", "Тест и предаване"] },
+ ];
+ 
+ const projects = [
+@@ -23,7 +26,7 @@ const projects = [
+ ];
+ 
+ const businessExamples: Record<string, string> = {
+-  "Салон / студио": "Пример: услуги и цени → заявка за час → известие до салона. Часът се потвърждава от екипа.",
++  "Салон / студио": "Пример: услуги → заявка за час → известие до салона. Часът се потвърждава от екипа.",
+   "Ресторант / заведение": "Пример: меню и работно време → заявка за резервация → потвърждение от заведението.",
+   "Сервиз / услуги": "Пример: описание на проблема → запис в таблица → известие и статус на заявката.",
+   "Медицински кабинет": "Пример: информация за услугите → заявка за обаждане, без събиране на медицински данни.",
+@@ -38,8 +41,6 @@ const answers: Record<string, { title: string; text: string; package: string }>
+ };
+ 
+ export default function Home() {
+-  const assistantRef = useRef<HTMLDivElement>(null);
+-  const previousFocus = useRef<HTMLElement | null>(null);
+   const [briefReady, setBriefReady] = useState(false);
+   const [menuOpen, setMenuOpen] = useState(false);
+   const [assistantOpen, setAssistantOpen] = useState(false);
+@@ -49,25 +50,6 @@ export default function Home() {
+   const resetAssistant = () => { setBusiness(""); setProblem(""); };
+   const startAssistant = () => { resetAssistant(); setAssistantOpen(true); };
+ 
+-  useEffect(() => {
+-    if (!assistantOpen) return;
+-    previousFocus.current = document.activeElement as HTMLElement;
+-    const overflow = document.body.style.overflow;
+-    document.body.style.overflow = "hidden";
+-    assistantRef.current?.querySelector<HTMLButtonElement>("button")?.focus();
+-    const onKey = (event: KeyboardEvent) => {
+-      if (event.key === "Escape") setAssistantOpen(false);
+-      if (event.key !== "Tab") return;
+-      const nodes = assistantRef.current?.querySelectorAll<HTMLElement>('button, a[href]');
+-      if (!nodes?.length) return;
+-      const first = nodes[0], last = nodes[nodes.length - 1];
+-      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+-      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+-    };
+-    document.addEventListener("keydown", onKey);
+-    return () => { document.body.style.overflow = overflow; document.removeEventListener("keydown", onKey); previousFocus.current?.focus(); };
+-  }, [assistantOpen]);
+-
+   useEffect(() => {
+     const context = (document as Document & { modelContext?: { registerTool?: (tool: unknown, options?: { signal?: AbortSignal }) => void | Promise<void> } }).modelContext;
+     if (!context?.registerTool) return;
+@@ -82,22 +64,22 @@ export default function Home() {
+   }, []);
+ 
+   return <main>
+-    <header className="nav-wrap"><a className="brand" href="#top" aria-label="VDX Digital начало"><span>V</span><strong>VDX Digital</strong></a><nav className={menuOpen ? "nav-links open" : "nav-links"} aria-label="Основна навигация"><a href="#services" onClick={() => setMenuOpen(false)}>Услуги</a><a href="#packages" onClick={() => setMenuOpen(false)}>Пакети</a><a href="#work" onClick={() => setMenuOpen(false)}>Портфолио</a><a className="nav-cta" href="#contact">Обсъди проект <ArrowRight size={16}/></a></nav><button className="menu-button" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? "Затвори менюто" : "Отвори менюто"}>{menuOpen ? <X/> : <Menu/>}</button></header>
++    <header className="nav-wrap"><a className="brand" href="#top" aria-label="VDX Digital начало"><span>V</span><strong>VDX Digital</strong></a><nav id="home-navigation" className={menuOpen ? "nav-links open" : "nav-links"} aria-label="Основна навигация"><a href="#services" onClick={() => setMenuOpen(false)}>Услуги</a><a href="#packages" onClick={() => setMenuOpen(false)}>Пакети</a><a href="#work" onClick={() => setMenuOpen(false)}>Портфолио</a><InquiryButton className="nav-cta" onClick={() => setMenuOpen(false)}>Поискай оферта</InquiryButton></nav><button className="menu-button" aria-controls="home-navigation" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? "Затвори менюто" : "Отвори менюто"}>{menuOpen ? <X/> : <Menu/>}</button></header>
+ 
+-    <section className="hero" id="top"><div className="hero-grid" aria-hidden="true"/><div className="hero-copy"><p className="eyebrow"><span/> Дигитални системи за реален бизнес</p><h1>Повече запитвания.<br/><em>По-малко ръчна работа.</em></h1><p className="hero-lead">Изграждам сайтове, автоматизации и AI решения, които превръщат интереса в запитване и спестяват ръчна работа.</p><div className="hero-actions"><a className="button primary" href="#contact">Обсъди проект <ArrowRight size={18}/></a><button className="button ghost" onClick={startAssistant}><Sparkles size={18}/> Намери правилното решение</button></div><div className="trust-row"><span>Ясна комуникация</span><span>Мобилен дизайн</span><span>Решение според процеса</span></div></div><div className="system-card" aria-label="Примерен поток на система"><div className="system-head"><span>VDX / BUSINESS FLOW</span><span className="live">● ACTIVE</span></div><div className="flow-step active"><span>01</span><div><strong>Ново запитване</strong><small>Форма, чат или телефон</small></div><Check size={18}/></div><div className="flow-line"/><div className="flow-step"><span>02</span><div><strong>Автоматично подреждане</strong><small>Данните са на едно място</small></div><ChevronRight size={18}/></div><div className="flow-line"/><div className="flow-step"><span>03</span><div><strong>Незабавно известие</strong><small>Реагирате навреме</small></div><ChevronRight size={18}/></div><div className="result-strip"><Zap size={18}/><div><small>РЕЗУЛТАТ</small><strong>По-малко пропуски. Повече контрол.</strong></div></div></div></section>
++    <section className="hero" id="top"><div className="hero-grid" aria-hidden="true"/><div className="hero-copy"><p className="eyebrow"><span/> Дигитални системи за реален бизнес</p><h1>Повече запитвания.<br/><em>По-малко ръчна работа.</em></h1><p className="hero-lead">Изграждам сайтове, автоматизации и AI решения, които превръщат интереса в запитване и спестяват ръчна работа.</p><div className="hero-actions"><InquiryButton>Поискай оферта</InquiryButton><button className="button ghost" onClick={startAssistant}><Sparkles size={18}/> Намери правилното решение</button></div><div className="trust-row"><span>Ясна комуникация</span><span>Мобилен дизайн</span><span>Решение според процеса</span></div></div><div className="system-card" aria-label="Примерен поток на система"><div className="system-head"><span>VDX / BUSINESS FLOW</span><span className="live">● ACTIVE</span></div><div className="flow-step active"><span>01</span><div><strong>Ново запитване</strong><small>Форма, чат или телефон</small></div><Check size={18}/></div><div className="flow-line"/><div className="flow-step"><span>02</span><div><strong>Автоматично подреждане</strong><small>Данните са на едно място</small></div><ChevronRight size={18}/></div><div className="flow-line"/><div className="flow-step"><span>03</span><div><strong>Незабавно известие</strong><small>Реагирате навреме</small></div><ChevronRight size={18}/></div><div className="result-strip"><Zap size={18}/><div><small>РЕЗУЛТАТ</small><strong>По-малко пропуски. Повече контрол.</strong></div></div></div></section>
+ 
+     <section className="section" id="services"><div className="section-head"><div><p className="eyebrow">Какво изграждам</p><h2>Четири услуги.<br/>Една ясна цел.</h2></div><p>Да изглеждате професионално, да реагирате по-бързо и да не губите време в задачи, които могат да се изпълнят автоматично.</p></div><div className="service-grid">{services.map((item,index)=><article className="service-card" key={item.title}><span className="service-number">0{index+1}</span><item.icon/><h3>{item.title}</h3><p>{item.text}</p></article>)}</div></section>
+ 
+     <section className="result-section"><div><p className="eyebrow">Резултатът за Вашия бизнес</p><h2>Получавате по-добър начин на работа.</h2></div><div className="result-list"><div><strong>01</strong><span><b>Повече доверие</b>Ясно представяне още при първото посещение.</span></div><div><strong>02</strong><span><b>По-бърза реакция</b>Запитванията стигат до Вас веднага.</span></div><div><strong>03</strong><span><b>По-малко хаос</b>Информацията и действията следват един процес.</span></div></div></section>
+ 
+-    <section className="section pricing" id="packages"><div className="section-head"><div><p className="eyebrow">Ориентировъчни цени</p><h2>Ясен старт без скрити обещания.</h2></div><p>Точната цена се определя след кратък разговор за обхвата. Така плащате за нужното, а не за излишни функции.</p></div><div className="price-grid">{packages.map(pack=><article className={pack.featured?"price-card featured":"price-card"} key={pack.name}>{pack.featured&&<span className="popular">НАЙ-ДОБРА СТОЙНОСТ</span>}<p>{pack.note}</p><h3>{pack.name}</h3><strong className="price">{pack.price}</strong><ul>{pack.features.map(f=><li key={f}><Check size={16}/>{f}</li>)}</ul><a className={pack.featured?"button primary":"button outline"} href={`mailto:V.DimitrovDigital@gmail.com?subject=${encodeURIComponent(pack.cta)}`}>{pack.cta}<ArrowRight size={16}/></a></article>)}</div><p className="price-note">Всички цени са ориентировъчни и се потвърждават с индивидуална оферта.</p></section>
++    <section className="section pricing" id="packages"><div className="section-head"><div><p className="eyebrow">Решения за Вашия бизнес</p><h2>Ясен старт без скрити обещания.</h2></div><p>Изберете подходящата посока. В кратък разговор ще уточним нуждите на бизнеса и обхвата на проекта.</p></div><div className="price-grid">{packages.map(pack=><article className={pack.featured?"price-card featured":"price-card"} key={pack.name}>{pack.featured&&<span className="popular">САЙТ + АВТОМАТИЗАЦИЯ</span>}<p>{pack.note}</p><h3>{pack.name}</h3><ul>{pack.features.map(f=><li key={f}><Check size={16}/>{f}</li>)}</ul><InquiryButton className={pack.featured?"button primary":"button outline"}>Поискай оферта</InquiryButton></article>)}</div><p className="price-note">Всяко решение се уточнява според Вашия бизнес.</p></section>
+ 
+     <section className="section work" id="work"><div className="section-head"><div><p className="eyebrow">Подбрани проекти</p><h2>От проблем към работещо решение.</h2></div><p>Реален сайт и демонстрационни процеси, които показват как дигиталното решение работи на практика.</p></div><div className="project-list">{projects.map((project,index)=><article className="project" key={project.title}><div className={`project-visual ${project.accent}`}><span>0{index+1}</span><div className="visual-window"><i/><i/><i/>{project.accent === "nuve" ? <div className="portfolio-salon"><small>BEAUTY SALON</small><strong>NUVÉ</strong><span>Красотата започва с грижа.</span><b>Услуги · Екип · Галерия</b></div> : <div className="portfolio-flow"><strong>{project.accent === "hvac" ? "Сервизна заявка" : "Резервация за вечеря"}</strong><span>{project.accent === "hvac" ? "Монтаж / Ремонт / Профилактика" : "Дата · Час · Брой гости"}</span><b>01 / Запис на заявката</b><b>02 / Известие до екипа</b><b>03 / Потвърждение от човек</b></div>}</div></div><div className="project-copy"><span className="tag">{project.type}</span><h3>{project.title}</h3><p className="project-subtitle">{project.subtitle}</p><div className="case-row"><small>ПРОБЛЕМ</small><p>{project.problem}</p></div><div className="case-row"><small>РЕШЕНИЕ</small><p>{project.result}</p></div>{project.href&&<a href={project.href} target="_blank" rel="noreferrer">Виж проекта <ArrowRight size={16}/></a>}</div></article>)}</div></section>
+ 
+     <section className="assistant-promo"><div><p className="eyebrow">Интерактивен консултант</p><h2>Кое решение е подходящо за Вашия бизнес?</h2><p>Отговорете на два кратки въпроса и получете практична начална посока — без регистрация. Препоръките са по готова логика и се уточняват в разговор.</p></div><button className="button light" onClick={startAssistant}><Sparkles size={18}/> Започни консултацията</button></section>
+-    <section className="section contact-section" id="contact"><div><p className="eyebrow">Да обсъдим проекта</p><h2>Какво искате да подобрите?</h2><p>Опишете бизнеса и задачата. Ще уточним обхвата, подхода и цената преди да започнем.</p><a href="tel:0893663031">0893 663 031</a><a href="mailto:V.DimitrovDigital@gmail.com">V.DimitrovDigital@gmail.com</a></div><form onSubmit={event => { event.preventDefault(); const data = new FormData(event.currentTarget); if (data.get("website")) return; const body = `Име: ${data.get("name")}\nИмейл: ${data.get("email")}\nБизнес: ${data.get("business")}\n\n${data.get("message")}`; window.location.href = `mailto:V.DimitrovDigital@gmail.com?subject=${encodeURIComponent("Нов проект за VDX Digital")}&body=${encodeURIComponent(body)}`; setBriefReady(true); }}><label>Вашето име<input name="name" required maxLength={100} autoComplete="name"/></label><label>Имейл за връзка<input name="email" type="email" required autoComplete="email"/></label><label>Бизнес / дейност<input name="business" required maxLength={150}/></label><label>Какво Ви е нужно?<textarea name="message" required minLength={10} maxLength={3000} rows={4} placeholder="Например: сайт за салон и подреждане на заявките за час."/></label><input className="honeypot" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true"/><button className="button primary" type="submit">Подготви имейл <ArrowRight size={17}/></button><p className="form-note" role="status">{briefReady ? "Имейлът е подготвен. Изпратете го от пощенското си приложение. Ако то не се отвори, използвайте адреса вляво." : "Отваря Вашата поща с попълнено запитване. Изпращането става от Вас."}</p></form></section>
++    <section className="section contact-section" id="contact"><div><p className="eyebrow">Да обсъдим проекта</p><h2>Какво искате да подобрите?</h2><p>Опишете бизнеса и задачата. Ще уточним обхвата и подхода преди да започнем.</p><InquiryButton className="button primary contact-call">Свържи се с нас</InquiryButton><a href="tel:+359893663031">0893 663 031</a><a href="mailto:V.DimitrovDigital@gmail.com">V.DimitrovDigital@gmail.com</a></div><form onSubmit={event => { event.preventDefault(); const data = new FormData(event.currentTarget); if (data.get("website")) return; const body = `Име: ${data.get("name")}\nИмейл: ${data.get("email")}\nБизнес: ${data.get("business")}\n\n${data.get("message")}`; window.location.href = `mailto:V.DimitrovDigital@gmail.com?subject=${encodeURIComponent("Нов проект за VDX Digital")}&body=${encodeURIComponent(body)}`; setBriefReady(true); }}><label>Вашето име<input name="name" required maxLength={100} autoComplete="name"/></label><label>Имейл за връзка<input name="email" type="email" required autoComplete="email"/></label><label>Бизнес / дейност<input name="business" required maxLength={150}/></label><label>Какво Ви е нужно?<textarea name="message" required minLength={10} maxLength={3000} rows={4} placeholder="Например: сайт за салон и подреждане на заявките за час."/></label><input className="honeypot" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true"/><button className="button primary" type="submit">Подготви имейл <ArrowRight size={17}/></button><p className="form-note" role="status">{briefReady ? "Имейлът е подготвен. Изпратете го от пощенското си приложение. Ако то не се отвори, използвайте адреса вляво." : "Отваря Вашата поща с попълнено запитване. Изпращането става от Вас."}</p></form></section>
+     <footer><div><a className="brand" href="#top"><span>V</span><strong>VDX Digital</strong></a><p>Уебсайтове, автоматизации и AI системи за български бизнеси.</p></div><div><small>КОНТАКТ</small><a href="mailto:V.DimitrovDigital@gmail.com">V.DimitrovDigital@gmail.com</a><a href="tel:0893663031"><Phone size={15}/> 0893 663 031</a><a href="https://www.instagram.com/v.dimitrovdigital/" target="_blank" rel="noreferrer"><MessageCircle size={15}/> Instagram</a></div><p className="copyright">© {new Date().getFullYear()} VDX Digital</p></footer>
+ 
+-    {assistantOpen&&<div className="assistant-overlay" role="dialog" aria-modal="true" aria-labelledby="assistant-title"><div className="assistant-modal" ref={assistantRef}><div className="assistant-top"><div><span><Sparkles size={16}/> VDX / КОНСУЛТАНТ</span><h2 id="assistant-title">Нека намерим правилната посока.</h2></div><button onClick={()=>setAssistantOpen(false)} aria-label="Затвори"><X/></button></div>{!business?<div className="assistant-step"><p>Какъв бизнес имате?</p><div className="option-grid">{["Салон / студио","Ресторант / заведение","Сервиз / услуги","Медицински кабинет","Друг бизнес"].map(x=><button key={x} onClick={()=>setBusiness(x)}>{x}<ChevronRight size={17}/></button>)}</div></div>:!problem?<div className="assistant-step"><button className="back" onClick={()=>setBusiness("")}>← Назад</button><p>Кой е най-големият проблем в момента?</p><div className="option-grid">{Object.keys(answers).map(x=><button key={x} onClick={()=>setProblem(x)}>{x}<ChevronRight size={17}/></button>)}</div></div>:recommendation&&<div className="recommendation"><span className="rec-label">ПРЕПОРЪКА ЗА {business.toUpperCase()}</span><h3>{recommendation.title}</h3><p>{recommendation.text}</p><p className="business-example">{businessExamples[business]}</p><div className="rec-package"><small>ПОДХОДЯЩ СТАРТ</small><strong>{recommendation.package}</strong></div><a className="button primary" href={`mailto:V.DimitrovDigital@gmail.com?subject=${encodeURIComponent(`Консултация: ${business} — ${problem}`)}`}>Обсъди препоръката <ArrowRight size={16}/></a><button className="restart" onClick={resetAssistant}>Започни отначало</button></div>}</div></div>}
++    {assistantOpen&&<Modal labelId="assistant-title" className="assistant-modal" onClose={() => setAssistantOpen(false)}><div className="assistant-top"><div><span><Sparkles size={16}/> VDX / КОНСУЛТАНТ</span><h2 id="assistant-title">Нека намерим правилната посока.</h2></div><button autoFocus onClick={()=>setAssistantOpen(false)} aria-label="Затвори"><X/></button></div>{!business?<div className="assistant-step"><p>Какъв бизнес имате?</p><div className="option-grid">{["Салон / студио","Ресторант / заведение","Сервиз / услуги","Медицински кабинет","Друг бизнес"].map(x=><button key={x} onClick={()=>setBusiness(x)}>{x}<ChevronRight size={17}/></button>)}</div></div>:!problem?<div className="assistant-step"><button className="back" onClick={()=>setBusiness("")}>← Назад</button><p>Кой е най-големият проблем в момента?</p><div className="option-grid">{Object.keys(answers).map(x=><button key={x} onClick={()=>setProblem(x)}>{x}<ChevronRight size={17}/></button>)}</div></div>:recommendation&&<div className="recommendation"><span className="rec-label">ПРЕПОРЪКА ЗА {business.toUpperCase()}</span><h3>{recommendation.title}</h3><p>{recommendation.text}</p><p className="business-example">{businessExamples[business]}</p><div className="rec-package"><small>ПОДХОДЯЩ СТАРТ</small><strong>{recommendation.package}</strong></div><InquiryButton>Обсъди препоръката</InquiryButton><button className="restart" onClick={resetAssistant}>Започни отначало</button></div>}</Modal>}
+   </main>;
+ }
+diff --git a/app/portfolio/page.tsx b/app/portfolio/page.tsx
+index a29ad74..2f75972 100644
+--- a/app/portfolio/page.tsx
++++ b/app/portfolio/page.tsx
+@@ -3,7 +3,7 @@ import { Portfolio } from "@/components/portfolio";
+ 
+ export default function PortfolioPage() {
+   return (
+-    <main className="flex-1 overflow-x-clip">
++    <main className="inner-page flex-1 overflow-x-clip">
+       <Portfolio />
+       <Contact variant="home" />
+     </main>
+diff --git a/app/services/page.tsx b/app/services/page.tsx
+index fc59d00..c65ad55 100644
+--- a/app/services/page.tsx
++++ b/app/services/page.tsx
+@@ -4,7 +4,7 @@ import { Services } from "@/components/services";
+ 
+ export default function ServicesPage() {
+   return (
+-    <main className="flex-1 overflow-x-clip">
++    <main className="inner-page flex-1 overflow-x-clip">
+       <Services />
+       <Process />
+       <Contact variant="home" />
+diff --git a/components/assistant-flow-panel.tsx b/components/assistant-flow-panel.tsx
+index a3ce1e1..7525ef8 100644
+--- a/components/assistant-flow-panel.tsx
++++ b/components/assistant-flow-panel.tsx
+@@ -11,6 +11,7 @@ import {
+   type AssistantBusiness,
+   type AssistantProblem,
+ } from "@/lib/site-content";
++import { InquiryButton } from "./phone-inquiry";
+ import { submitLead } from "@/lib/submit-lead";
+ 
+ export const openAssistantEventName = "vdx-open-assistant";
+@@ -117,7 +118,7 @@ export function AssistantFlowPanel({ variant = "widget" }: AssistantFlowPanelPro
+ 
+       <div
+         ref={messagesRef}
+-        className={`mt-4 space-y-3 overflow-y-auto pr-1 ${
++        className={`assistant-messages mt-4 space-y-3 overflow-y-auto pr-1 ${
+           variant === "widget" ? "max-h-[26rem]" : "max-h-[34rem]"
+         }`}
+       >
+@@ -195,6 +196,7 @@ export function AssistantFlowPanel({ variant = "widget" }: AssistantFlowPanelPro
+             <div className="max-w-[85%] rounded-[1.35rem] rounded-bl-md bg-[var(--accent-soft)] px-4 py-3 text-sm leading-7 text-[var(--foreground)]">
+               {assistantLabels.consultationQuestion}
+             </div>
++            <InquiryButton>Обсъди препоръката</InquiryButton>
+           </>
+         ) : null}
+ 
+@@ -217,7 +219,7 @@ export function AssistantFlowPanel({ variant = "widget" }: AssistantFlowPanelPro
+                 onChange={(event) =>
+                   setFormState((current) => ({ ...current, name: event.target.value }))
+                 }
+-                placeholder="Име"
++                placeholder="Име" aria-label="Име"
+                 disabled={isSubmitting}
+                 required
+               />
+@@ -230,7 +232,7 @@ export function AssistantFlowPanel({ variant = "widget" }: AssistantFlowPanelPro
+                     businessName: event.target.value,
+                   }))
+                 }
+-                placeholder="Име на бизнеса"
++                placeholder="Име на бизнеса" aria-label="Име на бизнеса"
+                 disabled={isSubmitting}
+                 required
+               />
+@@ -240,7 +242,7 @@ export function AssistantFlowPanel({ variant = "widget" }: AssistantFlowPanelPro
+                 onChange={(event) =>
+                   setFormState((current) => ({ ...current, contact: event.target.value }))
+                 }
+-                placeholder="Телефон или имейл"
++                placeholder="Телефон или имейл" aria-label="Телефон или имейл"
+                 disabled={isSubmitting}
+                 required
+               />
+@@ -250,7 +252,7 @@ export function AssistantFlowPanel({ variant = "widget" }: AssistantFlowPanelPro
+                 onChange={(event) =>
+                   setFormState((current) => ({ ...current, message: event.target.value }))
+                 }
+-                placeholder="Съобщение"
++                placeholder="Съобщение" aria-label="Съобщение"
+                 disabled={isSubmitting}
+               />
+               <button
+diff --git a/components/contact.tsx b/components/contact.tsx
+index ba7d56d..7477ca7 100644
+--- a/components/contact.tsx
++++ b/components/contact.tsx
+@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
+ import { Mail, MessageCircleMore, PhoneCall, Send } from "lucide-react";
+ 
+ import { companyInfo, contactSectionContent } from "@/lib/site-content";
++import { InquiryButton } from "./phone-inquiry";
+ import { submitLead } from "@/lib/submit-lead";
+ import { Reveal } from "./reveal";
+ import { SectionHeading } from "./section-heading";
+@@ -81,18 +82,19 @@ export function Contact({ variant = "page" }: ContactProps) {
+             />
+ 
+             <div className="mt-8 space-y-4">
++              <InquiryButton>Свържи се с нас</InquiryButton>
+               <div className="glass-panel rounded-[1.75rem] p-5">
+-                <div className="flex items-center gap-4">
+-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--accent-soft)] text-[var(--accent-strong)]">
++                <div className="flex items-start gap-4">
++                  <div className="flex shrink-0 h-12 w-12 items-center justify-center rounded-2xl bg-[var(--accent-soft)] text-[var(--accent-strong)]">
+                     <Mail className="h-5 w-5" />
+                   </div>
+-                  <div>
++                  <div className="min-w-0">
+                     <p className="text-xs uppercase tracking-[0.22em] text-[var(--accent)]">
+                       Имейл
+                     </p>
+                     <a
+                       href={`mailto:${companyInfo.email}`}
+-                      className="mt-2 inline-block text-[var(--foreground)] hover:text-[var(--accent-strong)]"
++                      className="mt-2 inline-block break-words max-w-full text-[var(--foreground)] hover:text-[var(--accent-strong)]"
+                     >
+                       {companyInfo.email}
+                     </a>
+@@ -101,17 +103,17 @@ export function Contact({ variant = "page" }: ContactProps) {
+               </div>
+ 
+               <div className="glass-panel rounded-[1.75rem] p-5">
+-                <div className="flex items-center gap-4">
+-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--accent-soft)] text-[var(--accent-strong)]">
++                <div className="flex items-start gap-4">
++                  <div className="flex shrink-0 h-12 w-12 items-center justify-center rounded-2xl bg-[var(--accent-soft)] text-[var(--accent-strong)]">
+                     <PhoneCall className="h-5 w-5" />
+                   </div>
+-                  <div>
++                  <div className="min-w-0">
+                     <p className="text-xs uppercase tracking-[0.22em] text-[var(--accent)]">
+                       Телефон
+                     </p>
+                     <a
+                       href={`tel:${companyInfo.phone}`}
+-                      className="mt-2 inline-block text-[var(--foreground)] hover:text-[var(--accent-strong)]"
++                      className="mt-2 inline-block break-words max-w-full text-[var(--foreground)] hover:text-[var(--accent-strong)]"
+                     >
+                       {companyInfo.phone}
+                     </a>
+@@ -149,7 +151,7 @@ export function Contact({ variant = "page" }: ContactProps) {
+                   <div className="grid gap-4 sm:grid-cols-2">
+                     <input
+                       className="field-input rounded-2xl"
+-                      placeholder="Име"
++                      placeholder="Име" aria-label="Име"
+                       value={formState.name}
+                       onChange={(event) =>
+                         setFormState((current) => ({ ...current, name: event.target.value }))
+@@ -159,7 +161,7 @@ export function Contact({ variant = "page" }: ContactProps) {
+                     />
+                     <input
+                       className="field-input rounded-2xl"
+-                      placeholder="Име на бизнеса"
++                      placeholder="Име на бизнеса" aria-label="Име на бизнеса"
+                       value={formState.businessName}
+                       onChange={(event) =>
+                         setFormState((current) => ({
+@@ -176,7 +178,7 @@ export function Contact({ variant = "page" }: ContactProps) {
+                     <input
+                       className="field-input rounded-2xl"
+                       type="email"
+-                      placeholder="Имейл"
++                      placeholder="Имейл" aria-label="Имейл"
+                       value={formState.email}
+                       onChange={(event) =>
+                         setFormState((current) => ({ ...current, email: event.target.value }))
+@@ -186,7 +188,9 @@ export function Contact({ variant = "page" }: ContactProps) {
+                     />
+                     <input
+                       className="field-input rounded-2xl"
+-                      placeholder="Телефон"
++                      placeholder="Телефон" aria-label="Телефон"
++                      type="tel"
++                      autoComplete="tel"
+                       value={formState.phone}
+                       onChange={(event) =>
+                         setFormState((current) => ({ ...current, phone: event.target.value }))
+@@ -197,7 +201,7 @@ export function Contact({ variant = "page" }: ContactProps) {
+ 
+                   <textarea
+                     className="field-textarea rounded-2xl"
+-                    placeholder="С какво мога да помогна?"
++                    placeholder="С какво мога да помогна?" aria-label="С какво мога да помогна?"
+                     value={formState.help}
+                     onChange={(event) =>
+                       setFormState((current) => ({ ...current, help: event.target.value }))
+diff --git a/lib/site-content.ts b/lib/site-content.ts
+index f0668d9..5955bc7 100644
+--- a/lib/site-content.ts
++++ b/lib/site-content.ts
+@@ -271,7 +271,7 @@ export const portfolioItems: PortfolioItem[] = [
+     description:
+       "Премиум сайт за салон за красота с услуги, галерия, контактна секция, Google Maps интеграция и мобилен дизайн.",
+     category: "Реален проект",
+-    href: "https://nuve-website-rouge.vercel.app",
++    href: "https://www.nuve-beauty.com/",
+     ctaLabel: "Виж проекта",
+   },
+   {
+diff --git a/app/responsive.css b/app/responsive.css
+new file mode 100644
+index 0000000..d01f006
+--- /dev/null
++++ b/app/responsive.css
+@@ -0,0 +1,122 @@
++/* Phone enquiries use a native dialog: keyboard focus stays in the active popup. */
++dialog.vdx-dialog {
++  position: fixed;
++  inset: 0;
++  margin: auto;
++  padding: 0;
++  width: min(580px, calc(100% - 32px));
++  max-width: none;
++  max-height: calc(100dvh - 32px);
++  overflow-y: auto;
++  overscroll-behavior: contain;
++  color: #f4f7ff;
++  background: #111722;
++  border: 1px solid #344057;
++  border-radius: 20px;
++  box-shadow: 0 30px 100px #0009;
++}
++.vdx-dialog::backdrop { background: #03050ad9; }
++dialog.phone-dialog { width: min(460px, calc(100% - 32px)); padding: 36px; text-align: center; }
++.phone-dialog .dialog-close {
++  position: absolute; top: 10px; right: 10px;
++  display: grid; place-items: center;
++  width: 44px; height: 44px;
++  color: #b3bfd4; background: transparent; border: 0; border-radius: 10px;
++}
++.phone-dialog .dialog-close:hover { background: #202839; color: white; }
++.phone-dialog-icon { display: grid; place-items: center; width: 62px; height: 62px; margin: 0 auto 24px; color: #8babff; background: #1b2d53; border: 1px solid #365495; border-radius: 18px; }
++.phone-dialog .eyebrow { font-size: .65rem; margin-bottom: 12px; }
++.phone-dialog h2 { margin: 0; font-size: clamp(1.65rem, 5vw, 2.1rem); line-height: 1.12; letter-spacing: -.045em; }
++.phone-dialog-copy { color: #aeb8ca; line-height: 1.6; font-size: .93rem; margin: 18px 0 24px; }
++.phone-number-label { display: block; font-size: .72rem; color: #9ba6ba; }
++.phone-number { display: block; width: 100%; min-width: 0; padding: 10px 0 20px; background: transparent; border: 0; color: #f4f7ff; font: inherit; font-size: clamp(1.75rem, 7vw, 2.4rem); font-weight: 800; text-align: center; letter-spacing: -.03em; }
++.phone-dialog .button { width: 100%; min-height: 48px; margin-top: 10px; }
++.copy-status { min-height: 36px; margin: 18px 0 0; font-size: .72rem; line-height: 1.5; color: #9ba6ba; }
++
++/* Restrict these repairs to the existing secondary pages. */
++.inner-page { --muted: #aeb8ca; --accent-soft: #192642; --accent-strong: #91adff; --border-strong: #3c5485; }
++.section-shell { width: min(1240px, 100%); margin: auto; padding-inline: clamp(20px, 4vw, 28px); }
++.section-shell .grid > *, .section-shell .flex > * { min-width: 0; }
++.section-shell svg { flex-shrink: 0; }
++.section-eyebrow { display: inline-flex; align-items: center; gap: 9px; max-width: 100%; padding: 8px 14px; font-size: .72rem; letter-spacing: .12em; color: #8babff; border: 1px solid #344a74; }
++.section-subtitle { font-size: clamp(2rem, 4vw, 3.6rem); line-height: 1.08; letter-spacing: -.045em; overflow-wrap: anywhere; }
++.section-copy { max-width: 720px; color: #aeb8ca; line-height: 1.7; }
++.glass-panel { border: 1px solid #293246; background: #101620; }
++.gold-button, .ghost-button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 14px 20px; font-size: .93rem; font-weight: 700; text-align: center; }
++.gold-button { background: #4d7cff; color: white; border: 1px solid #4d7cff; }
++.ghost-button { background: transparent; color: #eaf0ff; border: 1px solid #344058; }
++.gold-button:disabled { opacity: .65; cursor: wait; }
++.field-input, .field-textarea { width: 100%; min-width: 0; padding: 14px; font-size: 16px; background: #111722; color: #f4f7ff; border: 1px solid #344058; }
++.field-textarea { min-height: 130px; resize: vertical; }
++.inner-page :is(p, a, h3) { overflow-wrap: anywhere; }
++.inner-page button { min-height: 44px; }
++
++/* Specificity keeps these rules effective alongside the original stylesheet. */
++html { scrollbar-gutter: stable; }
++main .hero, main .section-head, main .result-section, main .contact-section, main .project { min-width: 0; }
++main :is(.hero, .section-head, .result-section, .contact-section, .project, .flow-step) > * { min-width: 0; }
++main .hero h1 { overflow-wrap: anywhere; }
++main .hero::after { right: 0; max-width: 100%; pointer-events: none; }
++main .button svg, .nav-cta svg { flex-shrink: 0; }
++main .nav-cta { border: 0; cursor: pointer; min-height: 44px; }
++main .menu-button { min-width: 44px; min-height: 44px; }
++main .price-card { display: flex; flex-direction: column; }
++main .price-card .popular { position: static; align-self: flex-start; margin-bottom: 18px; }
++main .price-card ul { flex: 1; }
++main .price-card li { align-items: flex-start; }
++main .price-card li svg { flex-shrink: 0; margin-top: 2px; }
++main .contact-call { margin-top: 12px; }
++main .contact-section :is(input, textarea) { font-size: 16px; min-width: 0; }
++dialog.assistant-modal { max-height: calc(100dvh - 32px); overflow-y: auto; }
++dialog .assistant-top { align-items: flex-start; }
++dialog .assistant-top > div { min-width: 0; }
++dialog .assistant-top button { flex-shrink: 0; width: 44px; height: 44px; }
++dialog .option-grid button { min-height: 48px; align-items: center; gap: 10px; }
++dialog .option-grid svg { flex-shrink: 0; }
++dialog .back, dialog .restart { min-height: 44px; }
++dialog :is(h2, h3, p, strong) { overflow-wrap: anywhere; }
++
++@media (max-width: 1100px) {
++  main .hero { grid-template-columns: minmax(0, 1fr); gap: 44px; }
++  main .hero h1 { max-width: 850px; }
++  main .hero .system-card { width: 100%; max-width: 640px; transform: none; }
++  main .assistant-promo { margin-inline: 22px; padding: 42px 30px; flex-wrap: wrap; }
++  main .assistant-promo > div { min-width: 0; }
++  main > footer { margin-inline: 28px; }
++}
++@media (min-width: 901px) and (max-width: 1240px) {
++  main .result-section { margin-inline: 28px; }
++}
++@media (max-width: 900px) {
++  main .contact-section { grid-template-columns: minmax(0, 1fr); gap: 36px; }
++}
++@media (max-width: 680px) {
++  dialog.phone-dialog { padding: 28px 22px 22px; }
++  .phone-dialog-icon { margin-top: 12px; margin-bottom: 20px; }
++  main .nav-links { max-height: calc(100dvh - 84px); overflow-y: auto; }
++  main .nav-links :is(a, button) { min-height: 44px; }
++  main .hero { padding-top: 40px; }
++  main .hero::after { filter: none; background: radial-gradient(ellipse, #275fff18, transparent 70%); }
++  main .hero h1 { font-size: clamp(2.35rem, 9vw, 3.5rem); line-height: 1.06; }
++  main .flow-step { grid-template-columns: 24px minmax(0, 1fr) 18px; gap: 8px; padding: 12px; }
++  main .flow-step strong { font-size: .9rem; }
++  main .flow-step small { font-size: .75rem; }
++  main .result-strip { padding: 14px; }
++  main .result-strip strong { font-size: .9rem; }
++  main .system-head { font-size: .6rem; gap: 6px; letter-spacing: .08em; }
++  main .section { padding-block: 64px; }
++  main .section-head h2, main .result-section h2, main .assistant-promo h2 { font-size: clamp(1.9rem, 8vw, 2.6rem); }
++  main .project-visual { padding: 38px 20px 26px; min-height: 280px; }
++  main .visual-window { width: 100%; max-width: 360px; transform: none; padding: 10px; }
++  main .visual-window .portfolio-flow { padding: 14px; }
++  main .portfolio-salon span { font-size: .9rem; }
++  main .assistant-promo { margin-bottom: 64px; padding: 36px 22px; }
++  main .assistant-promo .light { white-space: normal; }
++  main > footer { margin-inline: 20px; }
++  .inner-page .gold-button, .inner-page .ghost-button { width: 100%; }
++  .inner-page .assistant-messages { max-height: none; overflow: visible; }
++  .section-shell .section-eyebrow { font-size: .65rem; }
++}
++@media (prefers-reduced-motion: reduce) {
++  *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
++}
+diff --git a/components/modal.tsx b/components/modal.tsx
+new file mode 100644
+index 0000000..a6c1ca6
+--- /dev/null
++++ b/components/modal.tsx
+@@ -0,0 +1,60 @@
++"use client";
++
++import { useEffect, useRef, type ReactNode } from "react";
++
++let openModals = 0;
++let previousOverflow = "";
++
++// Native dialogs provide focus trapping, inert background content and focus return.
++export function Modal({ children, labelId, className = "", onClose }: {
++  children: ReactNode;
++  labelId: string;
++  className?: string;
++  onClose: () => void;
++}) {
++  const ref = useRef<HTMLDialogElement>(null);
++
++  useEffect(() => {
++    const dialog = ref.current!;
++    const returnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
++    if (openModals++ === 0) {
++      previousOverflow = document.body.style.overflow;
++      document.body.style.overflow = "hidden";
++    }
++    dialog.showModal();
++    return () => {
++      dialog.close();
++      if (--openModals === 0) document.body.style.overflow = previousOverflow;
++      if (returnFocus?.isConnected) returnFocus.focus({ preventScroll: true });
++    };
++  }, []);
++
++  return (
++    <dialog
++      ref={ref}
++      className={`vdx-dialog ${className}`}
++      aria-labelledby={labelId}
++      onCancel={(event) => { event.preventDefault(); onClose(); }}
++      onKeyDown={(event) => {
++        if (event.key !== "Tab") return;
++        const items = Array.from(event.currentTarget.querySelectorAll<HTMLElement>(
++          'button:not([disabled]), a[href], input:not([disabled]), textarea:not([disabled]), [tabindex="0"]',
++        )).filter((item) => item.getClientRects().length > 0);
++        const first = items[0], last = items[items.length - 1];
++        if (event.shiftKey && document.activeElement === first) {
++          event.preventDefault(); last?.focus();
++        } else if (!event.shiftKey && document.activeElement === last) {
++          event.preventDefault(); first?.focus();
++        }
++      }}
++      onClick={(event) => {
++        if (event.target !== event.currentTarget) return;
++        const bounds = event.currentTarget.getBoundingClientRect();
++        if (event.clientX < bounds.left || event.clientX > bounds.right ||
++            event.clientY < bounds.top || event.clientY > bounds.bottom) onClose();
++      }}
++    >
++      {children}
++    </dialog>
++  );
++}
+diff --git a/components/phone-inquiry.tsx b/components/phone-inquiry.tsx
+new file mode 100644
+index 0000000..2486240
+--- /dev/null
++++ b/components/phone-inquiry.tsx
+@@ -0,0 +1,60 @@
++"use client";
++
++import { createContext, useContext, useRef, useState, type ReactNode } from "react";
++import { ArrowRight, Check, Copy, Phone, X } from "lucide-react";
++import { companyInfo } from "@/lib/site-content";
++import { Modal } from "./modal";
++
++const InquiryContext = createContext<(() => void) | null>(null);
++const displayPhone = companyInfo.phone.replace(/^(\d{4})(\d{3})(\d{3})$/, "$1 $2 $3");
++const dialPhone = companyInfo.phone.replace(/^0/, "+359");
++
++function PhoneDialog({ onClose }: { onClose: () => void }) {
++  const [copyState, setCopyState] = useState<"idle" | "copied" | "manual">("idle");
++  const numberRef = useRef<HTMLInputElement>(null);
++
++  async function copyPhone() {
++    try {
++      await navigator.clipboard.writeText(companyInfo.phone);
++      setCopyState("copied");
++    } catch {
++      numberRef.current?.focus();
++      numberRef.current?.select();
++      setCopyState("manual");
++    }
++  }
++
++  return (
++    <Modal labelId="phone-inquiry-title" className="phone-dialog" onClose={onClose}>
++      <button className="dialog-close" type="button" onClick={onClose} aria-label="Затвори прозореца" autoFocus><X size={22}/></button>
++      <div className="phone-dialog-icon"><Phone size={26}/></div>
++      <p className="eyebrow">Да поговорим за Вашия проект</p>
++      <h2 id="phone-inquiry-title">Доброто решение започва с разговор.</h2>
++      <p className="phone-dialog-copy">Обадете се, за да обсъдим нуждите на бизнеса и да подготвим индивидуална оферта.</p>
++      <label className="phone-number-label" htmlFor="inquiry-phone">Телефон за връзка</label>
++      <input ref={numberRef} id="inquiry-phone" className="phone-number" value={displayPhone} readOnly onFocus={(event) => event.currentTarget.select()}/>
++      <a className="button primary" href={`tel:${dialPhone}`}><Phone size={18}/> Обади се сега</a>
++      <button className="button outline" type="button" onClick={copyPhone}>{copyState === "copied" ? <Check size={18}/> : <Copy size={18}/>} {copyState === "copied" ? "Номерът е копиран" : "Копирай номера"}</button>
++      <p className="copy-status" role="status" aria-live="polite">{copyState === "manual" ? "Копирането е блокирано от браузъра. Номерът е маркиран — копирайте го ръчно." : copyState === "copied" ? "Готово — можете да поставите номера." : "VDX Digital · Уебсайтове и автоматизации"}</p>
++    </Modal>
++  );
++}
++
++export function PhoneInquiryProvider({ children }: { children: ReactNode }) {
++  const [open, setOpen] = useState(false);
++  return <InquiryContext.Provider value={() => setOpen(true)}>
++    {children}
++    {open && <PhoneDialog onClose={() => setOpen(false)}/>}
++  </InquiryContext.Provider>;
++}
++
++export function InquiryButton({ children = "Поискай оферта", className = "button primary", onClick }: {
++  children?: ReactNode;
++  className?: string;
++  onClick?: () => void;
++}) {
++  const openInquiry = useContext(InquiryContext);
++  return <button type="button" className={className} aria-haspopup="dialog" onClick={() => { onClick?.(); openInquiry?.(); }}>
++    {children}<ArrowRight size={17} aria-hidden="true"/>
++  </button>;
++}

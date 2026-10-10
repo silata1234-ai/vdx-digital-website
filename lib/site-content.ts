@@ -271,7 +271,7 @@ export const portfolioItems: PortfolioItem[] = [
     description:
       "Премиум сайт за салон за красота с услуги, галерия, контактна секция, Google Maps интеграция и мобилен дизайн.",
     category: "Реален проект",
-    href: "https://nuve-website-rouge.vercel.app",
+    href: "https://www.nuve-beauty.com/",
     ctaLabel: "Виж проекта",
   },
   {

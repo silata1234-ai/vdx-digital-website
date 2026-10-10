@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import { Mail, MessageCircleMore, PhoneCall, Send } from "lucide-react";
 
 import { companyInfo, contactSectionContent } from "@/lib/site-content";
+import { InquiryButton } from "./phone-inquiry";
 import { submitLead } from "@/lib/submit-lead";
 import { Reveal } from "./reveal";
 import { SectionHeading } from "./section-heading";
@@ -81,18 +82,19 @@ export function Contact({ variant = "page" }: ContactProps) {
             />
 
             <div className="mt-8 space-y-4">
+              <InquiryButton>Свържи се с нас</InquiryButton>
               <div className="glass-panel rounded-[1.75rem] p-5">
-                <div className="flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--accent-soft)] text-[var(--accent-strong)]">
+                <div className="flex items-start gap-4">
+                  <div className="flex shrink-0 h-12 w-12 items-center justify-center rounded-2xl bg-[var(--accent-soft)] text-[var(--accent-strong)]">
                     <Mail className="h-5 w-5" />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-xs uppercase tracking-[0.22em] text-[var(--accent)]">
                       Имейл
                     </p>
                     <a
                       href={`mailto:${companyInfo.email}`}
-                      className="mt-2 inline-block text-[var(--foreground)] hover:text-[var(--accent-strong)]"
+                      className="mt-2 inline-block break-words max-w-full text-[var(--foreground)] hover:text-[var(--accent-strong)]"
                     >
                       {companyInfo.email}
                     </a>
@@ -101,17 +103,17 @@ export function Contact({ variant = "page" }: ContactProps) {
               </div>
 
               <div className="glass-panel rounded-[1.75rem] p-5">
-                <div className="flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--accent-soft)] text-[var(--accent-strong)]">
+                <div className="flex items-start gap-4">
+                  <div className="flex shrink-0 h-12 w-12 items-center justify-center rounded-2xl bg-[var(--accent-soft)] text-[var(--accent-strong)]">
                     <PhoneCall className="h-5 w-5" />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-xs uppercase tracking-[0.22em] text-[var(--accent)]">
                       Телефон
                     </p>
                     <a
                       href={`tel:${companyInfo.phone}`}
-                      className="mt-2 inline-block text-[var(--foreground)] hover:text-[var(--accent-strong)]"
+                      className="mt-2 inline-block break-words max-w-full text-[var(--foreground)] hover:text-[var(--accent-strong)]"
                     >
                       {companyInfo.phone}
                     </a>
@@ -149,7 +151,7 @@ export function Contact({ variant = "page" }: ContactProps) {
                   <div className="grid gap-4 sm:grid-cols-2">
                     <input
                       className="field-input rounded-2xl"
-                      placeholder="Име"
+                      placeholder="Име" aria-label="Име"
                       value={formState.name}
                       onChange={(event) =>
                         setFormState((current) => ({ ...current, name: event.target.value }))
@@ -159,7 +161,7 @@ export function Contact({ variant = "page" }: ContactProps) {
                     />
                     <input
                       className="field-input rounded-2xl"
-                      placeholder="Име на бизнеса"
+                      placeholder="Име на бизнеса" aria-label="Име на бизнеса"
                       value={formState.businessName}
                       onChange={(event) =>
                         setFormState((current) => ({
@@ -176,7 +178,7 @@ export function Contact({ variant = "page" }: ContactProps) {
                     <input
                       className="field-input rounded-2xl"
                       type="email"
-                      placeholder="Имейл"
+                      placeholder="Имейл" aria-label="Имейл"
                       value={formState.email}
                       onChange={(event) =>
                         setFormState((current) => ({ ...current, email: event.target.value }))
@@ -186,7 +188,9 @@ export function Contact({ variant = "page" }: ContactProps) {
                     />
                     <input
                       className="field-input rounded-2xl"
-                      placeholder="Телефон"
+                      placeholder="Телефон" aria-label="Телефон"
+                      type="tel"
+                      autoComplete="tel"
                       value={formState.phone}
                       onChange={(event) =>
                         setFormState((current) => ({ ...current, phone: event.target.value }))
@@ -197,7 +201,7 @@ export function Contact({ variant = "page" }: ContactProps) {
 
                   <textarea
                     className="field-textarea rounded-2xl"
-                    placeholder="С какво мога да помогна?"
+                    placeholder="С какво мога да помогна?" aria-label="С какво мога да помогна?"
                     value={formState.help}
                     onChange={(event) =>
                       setFormState((current) => ({ ...current, help: event.target.value }))

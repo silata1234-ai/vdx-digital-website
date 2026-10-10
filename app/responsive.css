@@ -1,0 +1,122 @@
+/* Phone enquiries use a native dialog: keyboard focus stays in the active popup. */
+dialog.vdx-dialog {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  padding: 0;
+  width: min(580px, calc(100% - 32px));
+  max-width: none;
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  color: #f4f7ff;
+  background: #111722;
+  border: 1px solid #344057;
+  border-radius: 20px;
+  box-shadow: 0 30px 100px #0009;
+}
+.vdx-dialog::backdrop { background: #03050ad9; }
+dialog.phone-dialog { width: min(460px, calc(100% - 32px)); padding: 36px; text-align: center; }
+.phone-dialog .dialog-close {
+  position: absolute; top: 10px; right: 10px;
+  display: grid; place-items: center;
+  width: 44px; height: 44px;
+  color: #b3bfd4; background: transparent; border: 0; border-radius: 10px;
+}
+.phone-dialog .dialog-close:hover { background: #202839; color: white; }
+.phone-dialog-icon { display: grid; place-items: center; width: 62px; height: 62px; margin: 0 auto 24px; color: #8babff; background: #1b2d53; border: 1px solid #365495; border-radius: 18px; }
+.phone-dialog .eyebrow { font-size: .65rem; margin-bottom: 12px; }
+.phone-dialog h2 { margin: 0; font-size: clamp(1.65rem, 5vw, 2.1rem); line-height: 1.12; letter-spacing: -.045em; }
+.phone-dialog-copy { color: #aeb8ca; line-height: 1.6; font-size: .93rem; margin: 18px 0 24px; }
+.phone-number-label { display: block; font-size: .72rem; color: #9ba6ba; }
+.phone-number { display: block; width: 100%; min-width: 0; padding: 10px 0 20px; background: transparent; border: 0; color: #f4f7ff; font: inherit; font-size: clamp(1.75rem, 7vw, 2.4rem); font-weight: 800; text-align: center; letter-spacing: -.03em; }
+.phone-dialog .button { width: 100%; min-height: 48px; margin-top: 10px; }
+.copy-status { min-height: 36px; margin: 18px 0 0; font-size: .72rem; line-height: 1.5; color: #9ba6ba; }
+
+/* Restrict these repairs to the existing secondary pages. */
+.inner-page { --muted: #aeb8ca; --accent-soft: #192642; --accent-strong: #91adff; --border-strong: #3c5485; }
+.section-shell { width: min(1240px, 100%); margin: auto; padding-inline: clamp(20px, 4vw, 28px); }
+.section-shell .grid > *, .section-shell .flex > * { min-width: 0; }
+.section-shell svg { flex-shrink: 0; }
+.section-eyebrow { display: inline-flex; align-items: center; gap: 9px; max-width: 100%; padding: 8px 14px; font-size: .72rem; letter-spacing: .12em; color: #8babff; border: 1px solid #344a74; }
+.section-subtitle { font-size: clamp(2rem, 4vw, 3.6rem); line-height: 1.08; letter-spacing: -.045em; overflow-wrap: anywhere; }
+.section-copy { max-width: 720px; color: #aeb8ca; line-height: 1.7; }
+.glass-panel { border: 1px solid #293246; background: #101620; }
+.gold-button, .ghost-button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 14px 20px; font-size: .93rem; font-weight: 700; text-align: center; }
+.gold-button { background: #4d7cff; color: white; border: 1px solid #4d7cff; }
+.ghost-button { background: transparent; color: #eaf0ff; border: 1px solid #344058; }
+.gold-button:disabled { opacity: .65; cursor: wait; }
+.field-input, .field-textarea { width: 100%; min-width: 0; padding: 14px; font-size: 16px; background: #111722; color: #f4f7ff; border: 1px solid #344058; }
+.field-textarea { min-height: 130px; resize: vertical; }
+.inner-page :is(p, a, h3) { overflow-wrap: anywhere; }
+.inner-page button { min-height: 44px; }
+
+/* Specificity keeps these rules effective alongside the original stylesheet. */
+html { scrollbar-gutter: stable; }
+main .hero, main .section-head, main .result-section, main .contact-section, main .project { min-width: 0; }
+main :is(.hero, .section-head, .result-section, .contact-section, .project, .flow-step) > * { min-width: 0; }
+main .hero h1 { overflow-wrap: anywhere; }
+main .hero::after { right: 0; max-width: 100%; pointer-events: none; }
+main .button svg, .nav-cta svg { flex-shrink: 0; }
+main .nav-cta { border: 0; cursor: pointer; min-height: 44px; }
+main .menu-button { min-width: 44px; min-height: 44px; }
+main .price-card { display: flex; flex-direction: column; }
+main .price-card .popular { position: static; align-self: flex-start; margin-bottom: 18px; }
+main .price-card ul { flex: 1; }
+main .price-card li { align-items: flex-start; }
+main .price-card li svg { flex-shrink: 0; margin-top: 2px; }
+main .contact-call { margin-top: 12px; }
+main .contact-section :is(input, textarea) { font-size: 16px; min-width: 0; }
+dialog.assistant-modal { max-height: calc(100dvh - 32px); overflow-y: auto; }
+dialog .assistant-top { align-items: flex-start; }
+dialog .assistant-top > div { min-width: 0; }
+dialog .assistant-top button { flex-shrink: 0; width: 44px; height: 44px; }
+dialog .option-grid button { min-height: 48px; align-items: center; gap: 10px; }
+dialog .option-grid svg { flex-shrink: 0; }
+dialog .back, dialog .restart { min-height: 44px; }
+dialog :is(h2, h3, p, strong) { overflow-wrap: anywhere; }
+
+@media (max-width: 1100px) {
+  main .hero { grid-template-columns: minmax(0, 1fr); gap: 44px; }
+  main .hero h1 { max-width: 850px; }
+  main .hero .system-card { width: 100%; max-width: 640px; transform: none; }
+  main .assistant-promo { margin-inline: 22px; padding: 42px 30px; flex-wrap: wrap; }
+  main .assistant-promo > div { min-width: 0; }
+  main > footer { margin-inline: 28px; }
+}
+@media (min-width: 901px) and (max-width: 1240px) {
+  main .result-section { margin-inline: 28px; }
+}
+@media (max-width: 900px) {
+  main .contact-section { grid-template-columns: minmax(0, 1fr); gap: 36px; }
+}
+@media (max-width: 680px) {
+  dialog.phone-dialog { padding: 28px 22px 22px; }
+  .phone-dialog-icon { margin-top: 12px; margin-bottom: 20px; }
+  main .nav-links { max-height: calc(100dvh - 84px); overflow-y: auto; }
+  main .nav-links :is(a, button) { min-height: 44px; }
+  main .hero { padding-top: 40px; }
+  main .hero::after { filter: none; background: radial-gradient(ellipse, #275fff18, transparent 70%); }
+  main .hero h1 { font-size: clamp(2.35rem, 9vw, 3.5rem); line-height: 1.06; }
+  main .flow-step { grid-template-columns: 24px minmax(0, 1fr) 18px; gap: 8px; padding: 12px; }
+  main .flow-step strong { font-size: .9rem; }
+  main .flow-step small { font-size: .75rem; }
+  main .result-strip { padding: 14px; }
+  main .result-strip strong { font-size: .9rem; }
+  main .system-head { font-size: .6rem; gap: 6px; letter-spacing: .08em; }
+  main .section { padding-block: 64px; }
+  main .section-head h2, main .result-section h2, main .assistant-promo h2 { font-size: clamp(1.9rem, 8vw, 2.6rem); }
+  main .project-visual { padding: 38px 20px 26px; min-height: 280px; }
+  main .visual-window { width: 100%; max-width: 360px; transform: none; padding: 10px; }
+  main .visual-window .portfolio-flow { padding: 14px; }
+  main .portfolio-salon span { font-size: .9rem; }
+  main .assistant-promo { margin-bottom: 64px; padding: 36px 22px; }
+  main .assistant-promo .light { white-space: normal; }
+  main > footer { margin-inline: 20px; }
+  .inner-page .gold-button, .inner-page .ghost-button { width: 100%; }
+  .inner-page .assistant-messages { max-height: none; overflow: visible; }
+  .section-shell .section-eyebrow { font-size: .65rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
+}

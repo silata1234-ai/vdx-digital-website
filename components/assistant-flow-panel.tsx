@@ -11,6 +11,7 @@ import {
   type AssistantBusiness,
   type AssistantProblem,
 } from "@/lib/site-content";
+import { InquiryButton } from "./phone-inquiry";
 import { submitLead } from "@/lib/submit-lead";
 
 export const openAssistantEventName = "vdx-open-assistant";
@@ -117,7 +118,7 @@ export function AssistantFlowPanel({ variant = "widget" }: AssistantFlowPanelPro
 
       <div
         ref={messagesRef}
-        className={`mt-4 space-y-3 overflow-y-auto pr-1 ${
+        className={`assistant-messages mt-4 space-y-3 overflow-y-auto pr-1 ${
           variant === "widget" ? "max-h-[26rem]" : "max-h-[34rem]"
         }`}
       >
@@ -195,6 +196,7 @@ export function AssistantFlowPanel({ variant = "widget" }: AssistantFlowPanelPro
             <div className="max-w-[85%] rounded-[1.35rem] rounded-bl-md bg-[var(--accent-soft)] px-4 py-3 text-sm leading-7 text-[var(--foreground)]">
               {assistantLabels.consultationQuestion}
             </div>
+            <InquiryButton>Обсъди препоръката</InquiryButton>
           </>
         ) : null}
 
@@ -217,7 +219,7 @@ export function AssistantFlowPanel({ variant = "widget" }: AssistantFlowPanelPro
                 onChange={(event) =>
                   setFormState((current) => ({ ...current, name: event.target.value }))
                 }
-                placeholder="Име"
+                placeholder="Име" aria-label="Име"
                 disabled={isSubmitting}
                 required
               />
@@ -230,7 +232,7 @@ export function AssistantFlowPanel({ variant = "widget" }: AssistantFlowPanelPro
                     businessName: event.target.value,
                   }))
                 }
-                placeholder="Име на бизнеса"
+                placeholder="Име на бизнеса" aria-label="Име на бизнеса"
                 disabled={isSubmitting}
                 required
               />
@@ -240,7 +242,7 @@ export function AssistantFlowPanel({ variant = "widget" }: AssistantFlowPanelPro
                 onChange={(event) =>
                   setFormState((current) => ({ ...current, contact: event.target.value }))
                 }
-                placeholder="Телефон или имейл"
+                placeholder="Телефон или имейл" aria-label="Телефон или имейл"
                 disabled={isSubmitting}
                 required
               />
@@ -250,7 +252,7 @@ export function AssistantFlowPanel({ variant = "widget" }: AssistantFlowPanelPro
                 onChange={(event) =>
                   setFormState((current) => ({ ...current, message: event.target.value }))
                 }
-                placeholder="Съобщение"
+                placeholder="Съобщение" aria-label="Съобщение"
                 disabled={isSubmitting}
               />
               <button

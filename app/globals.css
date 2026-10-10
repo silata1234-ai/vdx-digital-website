@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Shared modal and responsive rules are kept separate for easier maintenance. */
+@import "./responsive.css";
+
 
 :root{--background:#080b12;--foreground:#f4f7ff;--card:#111621;--card-foreground:#f4f7ff;--popover:#111621;--popover-foreground:#f4f7ff;--primary:#4d7cff;--primary-foreground:#fff;--secondary:#171e2b;--secondary-foreground:#f4f7ff;--muted:#121824;--muted-foreground:#9ba6ba;--accent:#4d7cff;--accent-foreground:#fff;--destructive:#ff5d68;--border:#283143;--input:#283143;--ring:#6e94ff;--radius:.75rem}
 *{box-sizing:border-box}html{scroll-behavior:smooth;overflow-x:clip}body{margin:0;background:var(--background);color:var(--foreground);font-family:Arial,Helvetica,sans-serif;overflow-x:clip}button,a{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}
